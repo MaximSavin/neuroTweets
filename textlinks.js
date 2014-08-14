@@ -397,7 +397,7 @@ force = d3.layout.force()
     .nodes(d3.values(nodes))
     .links(links)
     .size([w, h])
-    .linkDistance(20)
+    .linkDistance(40)
     .charge(-200)
     .on("tick", tick)
     .start();
@@ -502,12 +502,26 @@ text= vis.selectAll("labels")
     })
     .attr("x", 8)
     .attr("y", ".31em")
+    .attr("font-size","10px")
     .text(function(d,i) {
         for(j=0; j<uniqueMostKeyed.length; j++){
             if(d.name==uniqueMostKeyed[j]){
                 return d.name;
             }
-            else{}
+        }
+        for(k=0; k<majorNodes.length; k++){
+            if(i!=k){
+                //make this only if d.headline matches an action word
+                // for()
+            theseHeadlines.push(d.headline.split(" "));
+                for(z=0; z<uncommonArr.length; z++){
+                if (theseHeadlines[i].indexOf(uncommonArr[z])!=-1){
+
+                    // if(indexOf(d.headline.split(" "))==uncommonArr[z]){
+                        return uncommonArr[z];
+                    }           
+                }
+            }
         }
     });
 

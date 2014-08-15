@@ -28,7 +28,10 @@ var total6 = 0;
 var totalss = {};
 var opacityMap;
 var firstLoadVar;
-var firstLoad = -1;
+// var firstLoadVar;
+var firstLoad = 0;
+
+// var firstLoad = -1;
 var secLoad = -1;
 var secondLoadVar;
 var secondLoad = -1;
@@ -84,6 +87,11 @@ var tweets = [];
 var uncommonArr = [];
 var loadOne;
 var stopMove;
+var randomOne = false;
+var randomTwo = false;
+var firstPrep = false;
+var secondPrep = false;
+var ktick;
 
 svg = d3.select("#container")
     .append("svg")
@@ -277,7 +285,8 @@ $( document ).ready(function() {
 $("body").keypress(function(){
     (b+=1);
     if (b==1){
-force.stop();
+        force.stop();
+        randomOne = true;
         loadOne();
     //     stopMove();
     // }
@@ -286,10 +295,19 @@ force.stop();
             // arrangeClusters(); 
         }            
     if (b==2){
+        randomOne = false;
+        randomTwo = true;
+          clearInterval(firstLoadVar); //and stop loading stuff in
+        firstLoad = 0;
+        loadOne();
         // loadOne();
         // callOthers();
     }
-    if (b==3){      
+    if (b==3){   
+        firstPrep = false;
+        secondPrep = true;
+          clearInterval(firstLoadVar); //and stop loading stuff in
+        returnNodes();   
         // simpleNodes();
         // b=0;
         // $("#titlename").toggle();  //show    
@@ -343,6 +361,7 @@ for (i=0; i<thisData.length; i++){
 //     }
 // }
 // }    
+firstPrep = true;
     simpleNodes();
 }
 if(itsDone==true){
@@ -401,7 +420,14 @@ force = d3.layout.force()
     .size([w, h])
     .linkDistance(40)
     .charge(-200)
-    .on("tick", tick)
+    .on("tick", function(){
+        if(firstPrep){
+            tick();
+        }
+        if(secondPrep){
+            ktick();
+        }
+    })
     .start();
 
 drag = force.drag() 
@@ -496,6 +522,35 @@ jump = (Math.PI*2)/nodesLength;
 
 console.log("simple nodes")
 
+// text= vis.selectAll("labels")
+//     .data(force.nodes())
+//     .enter().append("text")
+//     .attr("class",function(d,i){
+//         return "labels"+i;
+//     })
+//     .attr("x", 8)
+//     .attr("y", ".31em")
+//     .attr("font-size","10px")
+//     .text(function(d,i) {
+//         for(j=0; j<uniqueMostKeyed.length; j++){
+//             if(d.name==uniqueMostKeyed[j]){
+//                 return d.name;
+//             }
+//         }
+//         for(k=0; k<majorNodes.length; k++){
+//             if(i!=k){
+//                 //make this only if d.headline matches an action word
+//                 // for()
+//                 for(z=0; z<uncommonArr.length; z++){
+//                 if (d.split.indexOf(uncommonArr[z])!=-1){
+
+//                     // if(indexOf(d.headline.split(" "))==uncommonArr[z]){
+//                         return uncommonArr[z];
+//                     }           
+//                 }
+//             }
+//         }
+//     });
 text= vis.selectAll("labels")
     .data(force.nodes())
     .enter().append("text")
@@ -505,6 +560,59 @@ text= vis.selectAll("labels")
     .attr("x", 8)
     .attr("y", ".31em")
     .attr("font-size","10px")
+    .text(function(d,i) {
+        return d.headline;
+    });
+
+// Use elliptical arc path segments to doubly-encode directionality.
+function tick() {
+  path.attr("d", linkArc);
+      circle
+      .attr("transform", transprep);
+      text.attr("transform", transprep);
+}
+function transprep(d) {
+  d.x = w-radius;
+  d.y = Math.max(radius, Math.min(h - radius, d.y));   
+  return "translate(" + d.x+ "," + d.y + ")";
+}
+ktick = function(){
+    for(i=0; i<links.length; i++){
+      d3.selectAll(".link"+i)
+      .transition()
+        .attr("d", linkArc);
+
+      d3.selectAll(".node"+i)
+      .transition()
+      .attr("transform", transform);
+
+       d3.selectAll(".labels"+i)     
+       .transition()
+       .attr("transform", transform);     
+       }  
+   }
+function transform(d) {
+  d.x = Math.max(radius, Math.min(w - radius, d.x));
+  d.y = Math.max(radius, Math.min(h - radius, d.y));   
+  return "translate(" + d.x+ "," + d.y + ")";
+}
+
+returnNodes = function(){
+
+    console.log("return nodes")
+// if(secondPrep){
+    force.stop();
+// var kforce = d3.layout.force()
+//     .nodes(d3.values(nodes))
+//     .links(links)
+//     .size([w, h])
+//     .linkDistance(40)
+//     .charge(-200)
+//     .on("tick",ktick)
+//     .start(); 
+for(i=0; i<links.length; i++){
+   d3.selectAll(".labels"+i)
+   .transition()
     .text(function(d,i) {
         for(j=0; j<uniqueMostKeyed.length; j++){
             if(d.name==uniqueMostKeyed[j]){
@@ -525,19 +633,7 @@ text= vis.selectAll("labels")
             }
         }
     });
-
-// Use elliptical arc path segments to doubly-encode directionality.
-function tick() {
-  path.attr("d", linkArc);
-  circle
-  .attr("transform", transform);
-  text.attr("transform", transform);
-}
-
-function transform(d) {
-  d.x = Math.max(radius, Math.min(w - radius, d.x));
-  d.y = Math.max(radius, Math.min(h - radius, d.y));   
-  return "translate(" + d.x+ "," + d.y + ")";
+}  
 }
 
 stopMove = function(){
@@ -555,8 +651,6 @@ force.stop();
 }
 
 
-var firstLoadVar;
-var firstLoad = 0;
 
 loadOne = function(){
     console.log("in here")
@@ -601,27 +695,42 @@ for(i=0; i<majorNodes.length; i++){
     }
 
     if(firstLoad!=majorNodes[i]){
-     d3.selectAll(".node"+firstLoad)
-    .transition()
-    .duration(10).attr("transform",transNew);
+        if(randomOne){
+             d3.selectAll(".node"+firstLoad)
+            .transition()
+            .duration(10).attr("transform",transOne);
 
-    d3.selectAll(".labels"+firstLoad)
-    .transition()
-    .duration(10).attr("transform", transNew);
+            d3.selectAll(".labels"+firstLoad)
+            .transition()
+            .duration(10).attr("transform", transOne);
 
-    d3.selectAll(".link"+firstLoad)
-    .transition()
-    .duration(5).attr("d", linkArc);
-       
+            d3.selectAll(".link"+firstLoad)
+            .transition()
+            .duration(5).attr("d", linkArc);
+       }
+        if(randomTwo){
+            console.log("randomTwo")
+             d3.selectAll(".node"+firstLoad)
+            .transition()
+            .duration(10).attr("transform",transNew);
+
+            d3.selectAll(".labels"+firstLoad)
+            .transition()
+            .duration(10).attr("transform", transNew);
+
+            d3.selectAll(".link"+firstLoad)
+            .transition()
+            .duration(5).attr("d", linkArc);
+       }
     }
 }
-function transOther(d) {
-    console.log("in here")
-  // d.x = Math.max(radius, Math.min(w - radius, d.x));
-  // d.y = Math.max(radius, Math.min(h - radius, d.y));   
-  // return "translate(" + d.x+ "," + d.y + ")";
+function transOne(d) {
+    d.x=(firstLoad*2)+50;
+    d.y = Math.max(radius, Math.min(h - radius, d.y));  
+        // d.x = w/4;
+        // d.y = firstLoad*15; 
+      return "translate(" + d.x+ "," + d.y + ")";
 }
-
 function transNew(d) {
     d.x=w/2+subradius*Math.cos(jump*firstLoad);
     d.y=h/2+subradius*Math.sin(jump*firstLoad);     

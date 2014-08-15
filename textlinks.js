@@ -448,8 +448,8 @@ force = d3.layout.force()
     .nodes(d3.values(nodes))
     .links(links)
     .size([w, h])
-    .linkDistance(40)
-    .charge(-200)
+    .linkDistance(100)
+    .charge(-600)
     .on("tick", function(){
         if(firstPrep){
             tick();

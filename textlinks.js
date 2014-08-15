@@ -251,7 +251,8 @@ color = d3.scale.ordinal()
     .domain([0, uniqueMostKeyed.length])
     .range(colorSpectrum);
     console.log(uniqueMostKeyed.length)
-if(uniqueMostKeyed.length>0){
+if(uncommonArr.length==3253){
+    console.log("yes")
 callOthers();    
 }
 // } 
@@ -331,7 +332,7 @@ if(itsDone==false){
 for (i=0; i<thisData.length; i++){ 
     for (j=0; j<uniqueMostKeyed.length; j++){ 
         if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
-        links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"headline":tweets[i]}) 
+        links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"headline":tweets[i],"split":tweets[i].split(" ")}) 
     }
 }
 }    
@@ -377,6 +378,7 @@ var nodesMax;
 var subradius = 325;
 var nodesLength;
 var jump;
+var theseHeadlines = [];
 // var subradius = 325;
 // nodesLength = d3.selectAll(circle[0]).size()
 // jump = (Math.PI*2)/links.length; 
@@ -389,7 +391,7 @@ console.log(links.length);
 // Compute the distinct nodes from the links.
 links.forEach(function(link) {
     // console.log(link.source+link.target);
-  link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, headline:link.headline});
+  link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, headline:link.headline, split:link.split});
   link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
 });
 
@@ -513,9 +515,8 @@ text= vis.selectAll("labels")
             if(i!=k){
                 //make this only if d.headline matches an action word
                 // for()
-            theseHeadlines.push(d.headline.split(" "));
                 for(z=0; z<uncommonArr.length; z++){
-                if (theseHeadlines[i].indexOf(uncommonArr[z])!=-1){
+                if (d.split.indexOf(uncommonArr[z])!=-1){
 
                     // if(indexOf(d.headline.split(" "))==uncommonArr[z]){
                         return uncommonArr[z];

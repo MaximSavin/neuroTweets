@@ -92,6 +92,26 @@ var randomTwo = false;
 var firstPrep = false;
 var secondPrep = false;
 var ktick;
+var tickOne;
+var tickTwo;
+
+// var s;
+function startTime() {
+    var today=new Date();
+    var h=today.getHours();
+    var m=today.getMinutes();
+    s=today.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    // document.getElementById('txt').innerHTML = h+":"+m+":"+s;
+    var t = setTimeout(function(){startTime()},500);
+}
+function checkTime(i) {
+    if (i<10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+}
+startTime();
+
 
 svg = d3.select("#container")
     .append("svg")
@@ -278,15 +298,21 @@ callOthers();
 var fishEyeGo = false;
 var b=0;
 var whatis = [];
+var loadTime;
 
 $( document ).ready(function() {
 
         // $("#titlename").toggle();  //show   
 $("body").keypress(function(){
+
+
     (b+=1);
     if (b==1){
         force.stop();
         randomOne = true;
+if(randomOne){
+    loadTime = 500;
+}
         loadOne();
     //     stopMove();
     // }
@@ -299,6 +325,9 @@ $("body").keypress(function(){
         randomTwo = true;
           clearInterval(firstLoadVar); //and stop loading stuff in
         firstLoad = 0;
+if(randomTwo){
+    loadTime = 10;
+}
         loadOne();
         // loadOne();
         // callOthers();
@@ -401,6 +430,7 @@ var theseHeadlines = [];
 // var subradius = 325;
 // nodesLength = d3.selectAll(circle[0]).size()
 // jump = (Math.PI*2)/links.length; 
+
 function simpleNodes(){
 
 console.log(links.length);
@@ -424,6 +454,12 @@ force = d3.layout.force()
         if(firstPrep){
             tick();
         }
+        // if(randomOne){
+        //     tickOne();
+        // }
+        // if(randomTwo){
+        //     tickTwo();
+        // }
         if(secondPrep){
             ktick();
         }
@@ -597,11 +633,12 @@ function transform(d) {
   return "translate(" + d.x+ "," + d.y + ")";
 }
 
+
 returnNodes = function(){
 
     console.log("return nodes")
 // if(secondPrep){
-    force.stop();
+    // force.stop();
 // var kforce = d3.layout.force()
 //     .nodes(d3.values(nodes))
 //     .links(links)
@@ -613,6 +650,7 @@ returnNodes = function(){
 for(i=0; i<links.length; i++){
    d3.selectAll(".labels"+i)
    .transition()
+   .duration(2000)
     .text(function(d,i) {
         for(j=0; j<uniqueMostKeyed.length; j++){
             if(d.name==uniqueMostKeyed[j]){
@@ -632,7 +670,12 @@ for(i=0; i<links.length; i++){
                 }
             }
         }
-    });
+    })
+    .transition()
+    .duration(2000)
+    .each("end", function(){
+        force.start();
+    })
 }  
 }
 
@@ -670,7 +713,7 @@ loadOne = function(){
         else {
           clearInterval(firstLoadVar); //and stop loading stuff in
         }
-    },10)
+    },loadTime)
 } 
 
 function shootOut(firstLoad){
@@ -695,56 +738,92 @@ for(i=0; i<majorNodes.length; i++){
     }
 
     if(firstLoad!=majorNodes[i]){
+        // tickOne = function(){
         if(randomOne){
              d3.selectAll(".node"+firstLoad)
             .transition()
-            .duration(10).attr("transform",transOne);
+            .duration(loadTime).attr("transform",transOne);
 
             d3.selectAll(".labels"+firstLoad)
             .transition()
-            .duration(10).attr("transform", transOne);
+            .duration(loadTime).attr("transform", transOne);
 
             d3.selectAll(".link"+firstLoad)
             .transition()
-            .duration(5).attr("d", linkArc);
+            .duration(loadTime).attr("d", linkArc);
        }
+   // }
+        // tickTwo = function(){
         if(randomTwo){
             console.log("randomTwo")
              d3.selectAll(".node"+firstLoad)
             .transition()
-            .duration(10).attr("transform",transNew);
+            .duration(loadTime).attr("transform",transNew);
 
             d3.selectAll(".labels"+firstLoad)
             .transition()
-            .duration(10).attr("transform", transNew);
+            .duration(loadTime).attr("transform", transNew);
 
             d3.selectAll(".link"+firstLoad)
             .transition()
-            .duration(5).attr("d", linkArc);
+            .duration(loadTime/2).attr("d", linkArc);
        }
+        // }
     }
 }
 function transOne(d) {
-    d.x=(firstLoad*2)+50;
+    // console.log(s)
+    d.x=(w-s*20);
     d.y = Math.max(radius, Math.min(h - radius, d.y));  
-        // d.x = w/4;
-        // d.y = firstLoad*15; 
       return "translate(" + d.x+ "," + d.y + ")";
 }
 function transNew(d) {
     d.x=w/2+subradius*Math.cos(jump*firstLoad);
     d.y=h/2+subradius*Math.sin(jump*firstLoad);     
-    // // if(i==firstLoad){
-    //     d.x = w/4;
-    //     d.y = firstLoad*15;
-  // d.x = Math.max(radius, Math.min(w - radius, d.x));
-  // d.y = Math.max(radius, Math.min(h - radius, d.y));  
       return "translate(" + d.x+ "," + d.y + ")";
-    // }
-    // else{}
 }
 }
+//  tickOne = function(){
+//         if(randomOne){
+//              d3.selectAll(".node"+firstLoad)
+//             .transition()
+//             .duration(10).attr("transform",transOne);
 
+//             d3.selectAll(".labels"+firstLoad)
+//             .transition()
+//             .duration(10).attr("transform", transOne);
+
+//             d3.selectAll(".link"+firstLoad)
+//             .transition()
+//             .duration(5).attr("d", linkArc);
+//        }
+// }
+// tickTwo = function(){
+//     if(randomTwo){
+//         console.log("randomTwo")
+//         d3.selectAll(".node"+firstLoad)
+//             .transition()
+//             .duration(10).attr("transform",transNew);
+
+//         d3.selectAll(".labels"+firstLoad)
+//             .transition()
+//             .duration(10).attr("transform", transNew);
+
+//         d3.selectAll(".link"+firstLoad)
+//             .transition()
+//             .duration(5).attr("d", linkArc);
+//        }
+// }
+// function transOne(d) {
+//     d.x=(firstLoad*2)+50;
+//     d.y = Math.max(radius, Math.min(h - radius, d.y));  
+//       return "translate(" + d.x+ "," + d.y + ")";
+// }
+// function transNew(d) {
+//     d.x=w/2+subradius*Math.cos(jump*firstLoad);
+//     d.y=h/2+subradius*Math.sin(jump*firstLoad);     
+//       return "translate(" + d.x+ "," + d.y + ")";
+// }
 
 
 $('circle').tipsy({

@@ -96,6 +96,19 @@ var tickOne;
 var tickTwo;
 var concordNodes;
 // var s;
+var amplitude = [];
+var dx;
+var yvalues = [];
+var xspacing = 8;   // How far apart should each horizontal location be spaced
+var maxwaves = 5;   // total # of waves to add together
+var theta = 0.0;
+var startAngle = 0;
+var angleVel = 0.23;
+
+
+
+
+
 function startTime() {
     var today=new Date();
     var h=today.getHours();
@@ -498,7 +511,7 @@ circle = vis.selectAll("node")
     })  
     circle
     .attr("r", function(d,i){
-        return 3;
+        return 0;
     })
     .attr("fill", function(d,i){
         for(j=0; j<uniqueMostKeyed.length; j++){
@@ -534,18 +547,6 @@ circle = vis.selectAll("node")
     .on("dblclick", dblclick)
     .call(drag);
 
-    circle
-        .transition()
-        .duration(2000)
-        .attr("r", function(d,i){
-            for(j=0; j<uniqueMostKeyed.length; j++){
-                if(d.name==uniqueMostKeyed[j]){
-                    return rMap(d.weight);
-                }
-            }
-            return 3;            
-        });
-
 nodesLength = d3.selectAll(circle[0]).size()-majorNodes.length;
 jump = (Math.PI*2)/nodesLength; 
 
@@ -558,35 +559,7 @@ jump = (Math.PI*2)/nodesLength;
 
 console.log("simple nodes")
 
-// text= vis.selectAll("labels")
-//     .data(force.nodes())
-//     .enter().append("text")
-//     .attr("class",function(d,i){
-//         return "labels"+i;
-//     })
-//     .attr("x", 8)
-//     .attr("y", ".31em")
-//     .attr("font-size","10px")
-//     .text(function(d,i) {
-//         for(j=0; j<uniqueMostKeyed.length; j++){
-//             if(d.name==uniqueMostKeyed[j]){
-//                 return d.name;
-//             }
-//         }
-//         for(k=0; k<majorNodes.length; k++){
-//             if(i!=k){
-//                 //make this only if d.headline matches an action word
-//                 // for()
-//                 for(z=0; z<uncommonArr.length; z++){
-//                 if (d.split.indexOf(uncommonArr[z])!=-1){
 
-//                     // if(indexOf(d.headline.split(" "))==uncommonArr[z]){
-//                         return uncommonArr[z];
-//                     }           
-//                 }
-//             }
-//         }
-//     });
 text= vis.selectAll("labels")
     .data(force.nodes())
     .enter().append("text")
@@ -595,6 +568,20 @@ text= vis.selectAll("labels")
     })
     .attr("x", 8)
     .attr("y", ".31em")
+    .attr("fill",function(d,i){
+        // for (j=0; j<uniqueMostKeyed.length; j++){ 
+        //     if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
+        //             return color(j);
+        //     }
+        // }    
+        for (k=0; k<uniqueKeywords.length; k++){
+            for(j=0; j<d.name.length; j++){
+                if(d.name[j]==uniqueKeywords[k] && d.name.length>1){
+                    return color(k);
+                }
+            }
+        }
+    })
     .attr("font-size","10px")
     .text(function(d,i) {
         return d.headline;
@@ -724,20 +711,10 @@ for(i=0; i<chunks.length; i++){
                 return i*40;
             })
             .attr("font-size","10px")
+            .attr("opacity",1)
             .text(function(d,i){
                 return d[0];
             })     
-
-            // var textTerm = vis.selectAll("label")
-            // .data(chunks)
-            // .enter().append("text")
-            // .attr("class","term")
-            // .attr("x", w/2)
-            // .attr("y", function(d,i){
-            //     return i*40;
-            // })
-            // .attr("font-size","10px")
-            // .text(term)
 
             var textTwo = vis.selectAll("label")
             .data(chunks)
@@ -749,57 +726,43 @@ for(i=0; i<chunks.length; i++){
             .attr("y", function(d,i){
                 return i*40;
             })
+            .attr("opacity",1)
             .attr("font-size","10px")
             .text(function(d,i){
                 return d[1];
             })            
-    // for(i=0; i<chunks.length; i++){
-    //    d3.selectAll(".labels"+i)
-    //     .transition()
-    //     .duration(8000)
-    //     .attr("x", w/2)
-    //     .attr("y", function(d){
-    //         return i*40;
-    //     })
-    // }
 }
-    // }
-        // for(var i=0; i<data.results.length; i++) {
-        //     var tweet = data.results[i];
-        //     var chunks = tweet.text.split(term);
-        //     chunks[0] = lastNChars(50, chunks[0]);
-        //     chunks[1] = firstNChars(50, chunks[1]);
-        //     table.append( $('<tr>')
-        //                   .append($('<td>').addClass('prefix').text(chunks[0]))
-        //                   .append($('<td>').addClass('term').text(term))
-        //                   .append($('<td>').addClass('suffix').text(chunks[1])) );
-
-        // }
-
-        // $('#output').prepend(table);
-
-
-
-
-
-
 returnNodes = function(){
-
     console.log("return nodes")
-// if(secondPrep){
-    // force.stop();
-// var kforce = d3.layout.force()
-//     .nodes(d3.values(nodes))
-//     .links(links)
-//     .size([w, h])
-//     .linkDistance(40)
-//     .charge(-200)
-//     .on("tick",ktick)
-//     .start(); 
+                d3.selectAll(".suffix")
+                    .transition()
+                    .duration(2000)
+                    .attr("opacity", .1) 
+                d3.selectAll(".prefix")
+                    .transition()
+                    .duration(2000)
+                    .attr("opacity", .1) 
 for(i=0; i<links.length; i++){
+
+   d3.selectAll(".node"+i)
+        .transition()
+        .duration(2000)
+        .attr("r", function(d,i){
+            for(j=0; j<uniqueMostKeyed.length; j++){
+                if(d.name==uniqueMostKeyed[j]){
+                    return rMap(d.weight);
+                }
+            }
+            return 3;            
+        })
+
+        force.start();
+
    d3.selectAll(".labels"+i)
    .transition()
-   .duration(2000)
+   // .delay(2000)
+   .duration(1000)
+   .attr("font-size","12pt")
     .text(function(d,i) {
         for(j=0; j<uniqueMostKeyed.length; j++){
             if(d.name==uniqueMostKeyed[j]){
@@ -812,8 +775,6 @@ for(i=0; i<links.length; i++){
                 // for()
                 for(z=0; z<uncommonArr.length; z++){
                 if (d.split.indexOf(uncommonArr[z])!=-1){
-
-                    // if(indexOf(d.headline.split(" "))==uncommonArr[z]){
                         return uncommonArr[z];
                     }           
                 }
@@ -821,10 +782,10 @@ for(i=0; i<links.length; i++){
         }
     })
     .transition()
-    .duration(2000)
+    .duration(5000)
     .each("end", function(){
         force.start();
-    })
+    })   
 }  
 }
 
@@ -921,10 +882,28 @@ for(i=0; i<majorNodes.length; i++){
         // }
     }
 }
+
+
+
+
 function transOne(d) {
-    // console.log(s)
-    d.x=(w-s*20);
-    d.y = Math.max(radius, Math.min(h - radius, d.y));  
+
+ 
+ //  startAngle += 0.015;
+ //  var angle = startAngle;
+ //  var map = d3.scale.linear()
+ //  .domain([-1,1])
+ //  .range([0,h])
+
+ // for (var x = 0; x <= w; x += 24) {
+ //    var y = map(Math.sin(angle));
+ //    d.x = x;
+ //    d.y = y;
+ //    angle += angleVel;
+ //  } 
+     d.x=w-100-s*20+subradius/2*Math.cos(jump/2*firstLoad);
+    // d.x=w-s*20;
+    d.y=h/2+subradius*Math.sin(jump*firstLoad);     
       return "translate(" + d.x+ "," + d.y + ")";
 }
 function transNew(d) {
@@ -933,47 +912,6 @@ function transNew(d) {
       return "translate(" + d.x+ "," + d.y + ")";
 }
 }
-//  tickOne = function(){
-//         if(randomOne){
-//              d3.selectAll(".node"+firstLoad)
-//             .transition()
-//             .duration(10).attr("transform",transOne);
-
-//             d3.selectAll(".labels"+firstLoad)
-//             .transition()
-//             .duration(10).attr("transform", transOne);
-
-//             d3.selectAll(".link"+firstLoad)
-//             .transition()
-//             .duration(5).attr("d", linkArc);
-//        }
-// }
-// tickTwo = function(){
-//     if(randomTwo){
-//         console.log("randomTwo")
-//         d3.selectAll(".node"+firstLoad)
-//             .transition()
-//             .duration(10).attr("transform",transNew);
-
-//         d3.selectAll(".labels"+firstLoad)
-//             .transition()
-//             .duration(10).attr("transform", transNew);
-
-//         d3.selectAll(".link"+firstLoad)
-//             .transition()
-//             .duration(5).attr("d", linkArc);
-//        }
-// }
-// function transOne(d) {
-//     d.x=(firstLoad*2)+50;
-//     d.y = Math.max(radius, Math.min(h - radius, d.y));  
-//       return "translate(" + d.x+ "," + d.y + ")";
-// }
-// function transNew(d) {
-//     d.x=w/2+subradius*Math.cos(jump*firstLoad);
-//     d.y=h/2+subradius*Math.sin(jump*firstLoad);     
-//       return "translate(" + d.x+ "," + d.y + ")";
-// }
 
 
 $('circle').tipsy({

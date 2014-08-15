@@ -94,7 +94,7 @@ var secondPrep = false;
 var ktick;
 var tickOne;
 var tickTwo;
-
+var concordNodes;
 // var s;
 function startTime() {
     var today=new Date();
@@ -279,7 +279,7 @@ color = d3.scale.ordinal()
     .domain([0, uniqueMostKeyed.length])
     .range(colorSpectrum);
     console.log(uniqueMostKeyed.length)
-if(uncommonArr.length==3253){
+if(uncommonArr.length>3000){
     console.log("yes")
 callOthers();    
 }
@@ -311,26 +311,26 @@ $("body").keypress(function(){
         force.stop();
         randomOne = true;
 if(randomOne){
-    loadTime = 500;
+    loadTime = 5;//500;
 }
         loadOne();
-    //     stopMove();
-    // }
-        // if(uniqueKDone==true){
-            // console.log("uniqueKDone"+uniqueKDone) 
-            // arrangeClusters(); 
+ 
         }            
     if (b==2){
-        randomOne = false;
-        randomTwo = true;
           clearInterval(firstLoadVar); //and stop loading stuff in
-        firstLoad = 0;
-if(randomTwo){
-    loadTime = 10;
-}
-        loadOne();
-        // loadOne();
-        // callOthers();
+
+
+       concordNodes();
+
+        // randomOne = false;
+        // randomTwo = true;
+          // clearInterval(firstLoadVar); //and stop loading stuff in
+//         firstLoad = 0;
+// if(randomTwo){
+//     loadTime = 10;
+// }
+//         loadOne();
+
     }
     if (b==3){   
         firstPrep = false;
@@ -430,7 +430,7 @@ var theseHeadlines = [];
 // var subradius = 325;
 // nodesLength = d3.selectAll(circle[0]).size()
 // jump = (Math.PI*2)/links.length; 
-
+var chunks = [];
 function simpleNodes(){
 
 console.log(links.length);
@@ -634,6 +634,155 @@ function transform(d) {
 }
 
 
+
+
+
+
+
+
+function lastNChars(n, str) {
+    var result = str.substr(str.length - Math.min(n, str.length), str.length);
+    if(result.length < str.length) {
+        result = "..." + result;
+    }
+    return result;
+}
+
+function firstNChars(n, str) {
+    if(typeof(str) == 'undefined')
+        return null;
+
+    var result = str.substr(0, Math.min(n, str.length));
+    if(result.length < str.length) {
+        result = result + "...";
+    }
+    return result;
+}
+
+
+
+concordNodes = function(){
+    var term = "brain";
+var chunks1=[];
+var chunks2 = [];
+    console.log("concordNodes")
+ 
+        for(var i=0; i<tweets.length; i++) {
+        if(typeof(tweets[i]) == 'undefined')
+            return;
+
+            if(tweets[i].length>0){
+            // var tweet = tweets[i];
+            chunks[i] = tweets[i].split(term);
+            chunks1.push(lastNChars(50, chunks[i][0]));
+            chunks2.push(firstNChars(50, chunks[i][1]));
+        }
+    }
+    // if(chunks.length==59){
+            // text
+            // .transition()
+            // .data(chunks)
+            // .attr("class","prefix")
+            // .attr("translate", transAgain)
+            // .text(function(d,i){
+            //     return d[0];
+            // })
+for(i=0; i<chunks.length; i++){
+       d3.selectAll(".labels"+i)
+       .attr("y",0)
+       .transition()
+       .duration(2000)
+        .text("brain")
+        .attr("transform", transAgain)
+
+       d3.selectAll(".node"+i)
+       .transition()
+       .duration(2000)
+        .attr("transform", transAgain)
+
+       d3.selectAll(".links"+i)
+       .transition()
+       .duration(2000)
+        .attr("transform", linkArc)  
+
+    function transAgain(d) {
+      d.x = w/2;
+      d.y = i*40;  
+      return "translate(" + d.x+ "," + d.y + ")";
+    }
+}
+
+
+           var textOne = vis.selectAll("label")
+            .data(chunks)
+            .enter().append("text")
+            .attr("class","prefix")
+            .attr("x", function(d,i){
+                return w/2-getTextWidth(d[0])-getTextWidth(term)*2;
+            })
+            .attr("y", function(d,i){
+                return i*40;
+            })
+            .attr("font-size","10px")
+            .text(function(d,i){
+                return d[0];
+            })     
+
+            // var textTerm = vis.selectAll("label")
+            // .data(chunks)
+            // .enter().append("text")
+            // .attr("class","term")
+            // .attr("x", w/2)
+            // .attr("y", function(d,i){
+            //     return i*40;
+            // })
+            // .attr("font-size","10px")
+            // .text(term)
+
+            var textTwo = vis.selectAll("label")
+            .data(chunks)
+            .enter().append("text")
+            .attr("class","suffix")
+            .attr("x",function(d,i){
+                return w/2+getTextWidth(term)*2; //+getTextWidth(d[1]);//getTextWidth(term)*2; //getTextWidth(d[1])
+            })
+            .attr("y", function(d,i){
+                return i*40;
+            })
+            .attr("font-size","10px")
+            .text(function(d,i){
+                return d[1];
+            })            
+    // for(i=0; i<chunks.length; i++){
+    //    d3.selectAll(".labels"+i)
+    //     .transition()
+    //     .duration(8000)
+    //     .attr("x", w/2)
+    //     .attr("y", function(d){
+    //         return i*40;
+    //     })
+    // }
+}
+    // }
+        // for(var i=0; i<data.results.length; i++) {
+        //     var tweet = data.results[i];
+        //     var chunks = tweet.text.split(term);
+        //     chunks[0] = lastNChars(50, chunks[0]);
+        //     chunks[1] = firstNChars(50, chunks[1]);
+        //     table.append( $('<tr>')
+        //                   .append($('<td>').addClass('prefix').text(chunks[0]))
+        //                   .append($('<td>').addClass('term').text(term))
+        //                   .append($('<td>').addClass('suffix').text(chunks[1])) );
+
+        // }
+
+        // $('#output').prepend(table);
+
+
+
+
+
+
 returnNodes = function(){
 
     console.log("return nodes")
@@ -678,6 +827,7 @@ for(i=0; i<links.length; i++){
     })
 }  
 }
+
 
 stopMove = function(){
 force.stop();

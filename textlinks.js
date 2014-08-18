@@ -136,8 +136,8 @@ svg = d3.select("#container")
     .append('svg:g')
     .attr("transform",
       "translate("+ 0 + "," + 0 + ")");  
-
-loadData("allresponses.csv", .25)
+loadData("allresponses.csv", .1)
+// loadData("100tweetspull.csv", .1)
 function loadData(csvName, filterNum){
 citeNums.length = 0;
 keywords.length = 0;
@@ -179,7 +179,7 @@ var keywordSorted = false;
 
 
 
-var common = 'the, I,in,t,co,and,im,rt,shit,bitch,bitches, s, from,those,that, it, is, we, all, a, an, by, to, you, me, he, she, they, we, it, i, are, to, for, of';
+var common = 'http,the, I,in,t,co,and,im,rt,shit,bitch,bitches, s, from,those,that, it, is, we, all, a, an, by, to, you, me, he, she, they, we, it, i, are, to, for, of';
 function getUncommon(sentence, common) {
     var wordArr = sentence.match(/\w+/g),
         commonObj = {},
@@ -281,14 +281,22 @@ for (i = 0; i<uniqueMostKeyed.length; i++){
    totalK[i]= keyConsolidation(uniqueMostKeyed[i])
     uniqueKDone=true;   
 }
-
-colorSpectrum = [
-"#fc5988" 
-,"#b14a41"
-,"#6ab054"
-,"#8675ee"
-,"#fcb752"
-,"#89e2fe"]
+// uniqueMostKeyed
+// var colorSpectrum = colorbrewer.PuBu[uniqueMostKeyed.length];
+colorSpectrum =[
+"#9ecae1"
+,"#6baed6"
+,"#4292c6"
+,"#2171b5"
+,"#08519c"
+,"#08306b"
+]
+// colorSpectrum = [
+// "#fc5988" 
+// ,"#8675ee"
+// ,"#fcb752"
+// ,"#89e2fe"
+// ]
 
 color = d3.scale.ordinal()
     .domain([0, uniqueMostKeyed.length])
@@ -327,7 +335,7 @@ $("body").keypress(function(){
         force.stop();
         randomOne = true;
 if(randomOne){
-    loadTime = 5;//500;
+    loadTime = 1;//500;
 }
         loadOne();
  
@@ -465,7 +473,7 @@ force = d3.layout.force()
     .links(links)
     .size([w, h])
     .linkDistance(100)
-    .charge(-600)
+    .charge(-100)
     .on("tick", function(){
         if(firstPrep){
             tick();
@@ -507,8 +515,8 @@ path = vis.selectAll("path")
     .attr("class",function(d,i){
         return "link"+i;
     }) 
-    .attr("stroke","gray")
-    .attr("opacity",.1)
+    // .attr("stroke","gray")
+    .attr("opacity",0)
     .attr("fill","none")
 
 circle = vis.selectAll("node")
@@ -535,29 +543,30 @@ circle = vis.selectAll("node")
                 return "white";                    
             }
         }
-        for (k=0; k<uniqueKeywords.length; k++){
-            for(j=0; j<d.name.length; j++){
-                if(d.name[j]==uniqueKeywords[k] && d.name.length>1){
-                    return color(k);
-                }
-            }
-        }
+            return "none";
+        // for (k=0; k<uniqueKeywords.length; k++){
+        //     for(j=0; j<d.name.length; j++){
+        //         if(d.name[j]==uniqueKeywords[k] && d.name.length>1){
+        //             return color(k);
+        //         }
+        //     }
+        // }
     })
-    .attr("stroke", function(d,i){
-        for(j=0; j<uniqueMostKeyed.length; j++){
-               if(d.name==uniqueMostKeyed[j]){
-                    majorNodes.push(i);
-                    return "gray";                    
-                }
-            }
-            for (k=0; k<uniqueKeywords.length; k++){
-                for(j=0; j<d.name.length; j++){
-                    if(d.name[j]==uniqueKeywords[k] && d.name.length>1){
-                        return "none";
-                    }
-                }
-            }        
-    })
+    // .attr("stroke", function(d,i){
+    //     for(j=0; j<uniqueMostKeyed.length; j++){
+    //            if(d.name==uniqueMostKeyed[j]){
+    //                 majorNodes.push(i);
+    //                 return "gray";                    
+    //             }
+    //         }
+    //         for (k=0; k<uniqueKeywords.length; k++){
+    //             for(j=0; j<d.name.length; j++){
+    //                 if(d.name[j]==uniqueKeywords[k] && d.name.length>1){
+    //                     return "none";
+    //                 }
+    //             }
+    //         }        
+    // })
     // .attr("stroke-width",.3)
     .on("dblclick", dblclick)
     .call(drag);
@@ -646,30 +655,31 @@ linkArc = function(d) {
 // var fisheye = d3.fisheye.circular()
 //       .radius(120);
 //     svg.on("mouseover", function() {
-//         // force.stop();
-//       fisheye.focus(d3.mouse(this));
+//         force.stop();
+//       // fisheye.focus(d3.mouse(this));
+//       fisheye.focus([w/2, h/2]);
 
-//       circle.each(function(d) { d.fisheye = fisheye(d); })
-//           .attr("cx", function(d) { return d.fisheye.x; })
-//           .attr("cy", function(d) { return d.fisheye.y; })
-//           .attr("r", function(d) { return d.fisheye.z * radius; });
+//       // circle.each(function(d) { d.fisheye = fisheye(d); })
+//       //     .attr("cx", function(d) { return d.fisheye.x; })
+//       //     .attr("cy", function(d) { return d.fisheye.y; })
+//       //     .attr("r", function(d) { return d.fisheye.z * radius; });
 
 //       text.each(function(d) { d.fisheye = fisheye(d); })
 //           .attr("x", function(d) { return d.fisheye.x; })
 //           .attr("y", function(d) { return d.fisheye.y; })
 //           .attr("font-size", function(d) { return d.fisheye.z * 10+"pt"; });
 
-//       path
-//       .attr("d", changeArc);
+//       // path
+//       // .attr("d", changeArc);
 
-//       function changeArc(d){
-//         // console.log(fisheye(d))
-//         var dx = d.target.fisheye.x - d.source.fisheye.x,
-//             dy = d.target.fisheye.y - d.source.fisheye.y,
-//             dr = Math.sqrt(dx * dx + dy * dy);    
-//             // console.log(dr+"inside changeArc");   
-//         return "M" + d.source.fisheye.x + "," + d.source.fisheye.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.fisheye.x + "," + d.target.fisheye.y;     
-//       }  
+//       // function changeArc(d){
+//       //   // console.log(fisheye(d))
+//       //   var dx = d.target.fisheye.x - d.source.fisheye.x,
+//       //       dy = d.target.fisheye.y - d.source.fisheye.y,
+//       //       dr = Math.sqrt(dx * dx + dy * dy);    
+//       //       // console.log(dr+"inside changeArc");   
+//       //   return "M" + d.source.fisheye.x + "," + d.source.fisheye.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.fisheye.x + "," + d.target.fisheye.y;     
+//       // }  
         
 
 //     });
@@ -738,7 +748,7 @@ var chunks2 = [];
             // .text(function(d,i){
             //     return d[0];
             // })
-for(i=0; i<chunks.length; i++){
+for(i=0; i<links.length; i++){
        d3.selectAll(".labels"+i)
        .attr("y",0)
        .transition()
@@ -769,7 +779,11 @@ for(i=0; i<chunks.length; i++){
             .enter().append("text")
             .attr("class","prefix")
             .attr("x", function(d,i){
+                if(d[0]==null){
+                    return 0;
+                }else{
                 return w/2-getTextWidth(d[0])-getTextWidth(term)*2;
+                }
             })
             .attr("y", function(d,i){
                 return i*40;
@@ -777,7 +791,9 @@ for(i=0; i<chunks.length; i++){
             .attr("font-size","10px")
             .attr("opacity",1)
             .text(function(d,i){
+                if(d[0]!=null){
                 return d[0];
+                }else{ return " "}
             })     
 
             var textTwo = vis.selectAll("label")
@@ -793,7 +809,9 @@ for(i=0; i<chunks.length; i++){
             .attr("opacity",1)
             .attr("font-size","10px")
             .text(function(d,i){
+             if(d[1]!=null){
                 return d[1];
+                }else{ return " "}
             })            
 }
 returnNodes = function(){
@@ -822,31 +840,38 @@ for(i=0; i<links.length; i++){
 
         force.start();
 
-   d3.selectAll(".labels"+i)
+   text
+   // d3.selectAll(".labels"+i)
    .transition()
    // .delay(2000)
    .duration(1000)
    .attr("font-size","12pt")
     .text(function(d,i) {
-        for(j=0; j<uniqueMostKeyed.length; j++){
-            if(d.name==uniqueMostKeyed[j]){
-                return d.name;
-            }
-        }
-        for(k=0; k<majorNodes.length; k++){
-            if(i!=k){
+        // for(j=0; j<uniqueMostKeyed.length; j++){
+        //     if(d.name==uniqueMostKeyed[j]){
+        //         return d.name;
+        //     }
+        // else{
+        // for(k=0; k<majorNodes.length; k++){
+        //     if(i!=k){
                 //make this only if d.headline matches an action word
-                // for()
+                // for(j=0; j<links.length; j++){
                 for(z=0; z<uncommonArr.length; z++){
-                if (d.split.indexOf(uncommonArr[z])!=-1){
+                    // if(uncommonArr[z]!=null){
+                if (links[i].split.indexOf(uncommonArr[z])!=-1){
+                    // console.log("uncommonArr"+uncommonArr[z])
                         return uncommonArr[z];
-                    }           
+                    }
+                    // else{ return " "}           
                 }
-            }
-        }
-    })
+                // }
+        //     }
+        // }
+        // }
+        // }
+    }) 
     .transition()
-    .duration(5000)
+    .duration(2000)
     .each("end", function(){
         force.start();
     })   
@@ -965,9 +990,10 @@ function transOne(d) {
  //    d.y = y;
  //    angle += angleVel;
  //  } 
-     d.x=w-100-s*20+subradius/2*Math.cos(jump/2*firstLoad);
+     // d.x=w-100-s*20+subradius/2*Math.cos(jump/2*firstLoad);
     // d.x=w-s*20;
-    d.y=h/2+subradius*Math.sin(jump*firstLoad);     
+    d.x=w-100-s*20+subradius/2*Math.cos(jump*2*firstLoad);
+    d.y=h/2+subradius*Math.sin(jump*firstLoad*4);     //doing subrad*2 makes the amp bigger
       return "translate(" + d.x+ "," + d.y + ")";
 }
 function transNew(d) {

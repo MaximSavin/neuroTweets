@@ -32,11 +32,16 @@ var firstLoadVar;
 var firstLoad = 0;
 
 // var firstLoad = -1;
-var secLoad = -1;
-var secondLoadVar;
-var secondLoad = -1;
+// var secLoad = -1;
+// var secondLoadVar;
+// var secondLoad = -1;
 var padding = 35;
 var padX = 100;
+
+var loadTwo;
+var secLoadVar;
+var secLoad = 0;
+
 
 var minYear;
 var maxYear;
@@ -328,7 +333,7 @@ var fishEyeGo = false;
 var b=0;
 var whatis = [];
 var loadTime;
-
+var textOne;
 $( document ).ready(function() {
 
         // $("#titlename").toggle();  //show   
@@ -365,10 +370,12 @@ $("body").keypress(function(){
        concordNodes();
    }
    if(b==4){
-        firstPrep = false;
-        secondPrep = true;
-          clearInterval(firstLoadVar); //and stop loading stuff in
-        returnNodes();   
+    pushDown(secLoad);
+        // loadTwo();
+        // firstPrep = false;
+        // secondPrep = true;
+        //   clearInterval(firstLoadVar); //and stop loading stuff in
+        // returnNodes();   
         // simpleNodes();
         // b=0;
         // $("#titlename").toggle();  //show    
@@ -444,7 +451,7 @@ console.log(links.length);
 // Compute the distinct nodes from the links.
 links.forEach(function(link) {
     // console.log(link.source+link.target);
-  link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, headline:link.headline, split:link.split});
+  link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, headline:link.headline, split:link.split.join(" "), length:link.split.length});
   link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
 });
 
@@ -560,11 +567,13 @@ text = vis.selectAll("labels")
             }
         }
     })
-    // .attr("font-size","10px")
     .attr("opacity",1)
     .text(function(d,i) {
-        return d.headline;
-    });
+        // if(d.name!="null"){
+        //     return d.name.join(" ")
+        // }
+        return d.split;
+    })
 
 // Use elliptical arc path segments to doubly-encode directionality.
 function tick() {
@@ -665,6 +674,7 @@ for(i=0; i<links.length; i++){
        .duration(2000)
        .attr("opacity",1)
         .text("brain")
+            .attr("text-anchor","middle")
         .attr("transform", transAgain)
 
        d3.selectAll(".node"+i)
@@ -683,20 +693,21 @@ for(i=0; i<links.length; i++){
       return "translate(" + d.x+ "," + d.y + ")";
     }
 }
-           var textOne = vis.selectAll("label")
+           textOne = vis.selectAll("label")
             .data(chunks)
             .enter().append("text")
-            .attr("class","prefix")
+            .attr("class",function(d,i){ console.log(i); return "prefix"+i; })
             .attr("x", function(d,i){
                 if(d[0]==null){
                     return 0;
                 }else{
-                return w/2-getTextWidth(d[0])-getTextWidth(term)*2;
+                return w/2-getTextWidth(term)*2;
                 }
             })
             .attr("y", function(d,i){
                 return i*40;
             })
+            .attr("text-anchor","end")
             .attr("font-size","12px")
             .attr("opacity",1)
             .text(function(d,i){
@@ -705,15 +716,36 @@ for(i=0; i<links.length; i++){
                 }else{ return " "}
             })     
 
+
+// var i = 0;
+// data.forEach(function(d,row) {
+//     d.split("").forEach(function(d,column) {
+//         transition(row,column);
+//     });
+// });
+
+// function transition(row,column) {
+//    d3.select('text').datum(data[row].split("").slice(0,column+1))
+//     .transition()
+//     .delay(function(d) { return (row*5000) + (column*50); } )
+//     .text(function(d){return d.join("");});
+// }
+
+
+
+
+
             var textTwo = vis.selectAll("label")
             .data(chunks)
             .enter().append("text")
             .attr("class","suffix")
+            .attr("text-anchor","start")
             .attr("x",function(d,i){
                 return w/2+getTextWidth(term)*2; //+getTextWidth(d[1]);//getTextWidth(term)*2; //getTextWidth(d[1])
             })
             .attr("y", function(d,i){
                 return i*40;
+
             })
             .attr("opacity",1)
             .attr("font-size","12px")
@@ -721,8 +753,147 @@ for(i=0; i<links.length; i++){
              if(d[1]!=null){
                 return d[1];
                 }else{ return " "}
-            })            
+            })        
 }
+
+
+// loadTwo = function(){
+//     console.log("in here")
+//     secLoadVar = setInterval(function(){ 
+//     // if (firstLoad<=links.length){
+//     if (secLoad<=chunks.length){
+//         for(i=0; i<majorNodes.length; i++){
+//             if (secLoad==majorNodes[i]){
+//                 secLoad++;
+//             }
+//             else{            
+//                 // var oneTweet = links[firstLoad];
+//                 pushDown(secLoad); //store inner subjects is the loading function for the big data      
+//                 secLoad++;
+//             }
+//         }
+//     } 
+//         else {
+//           clearInterval(secLoadVar); //and stop loading stuff in
+//         }
+//     },loadTime)
+// } 
+var other = 0;
+function pushDown(secLoad){
+    console.log(secLoad)
+ var y = d3.scale.linear()
+    .domain([0, chunks.length - 1])
+    .range([0, h]);
+  // push a new data point onto the back
+  // chunks.push(chunks[secLoad]);
+
+ // d3.selectAll(".prefix"+secLoad-1)
+ //      .attr("transform", null)
+ //    .transition()
+ //      .duration(500)
+ //      .ease("linear")
+ //      .attr("transform", "translate(0," + y(-18) + ")")
+  // redraw the line, and slide it to the left
+      // for (i=0; i<secLoad; i++){
+      //   d3.selectAll(".prefix"+i)
+      //   .transition()
+      //     .duration(500)
+      //     .ease("linear")
+      //     .attr("transform", function(d){
+      //       return "translate(0," + y(-18) + ")"
+      //   })         
+      // }
+
+
+
+  d3.selectAll(".prefix"+secLoad)
+      .attr("transform", null)
+    .transition()
+      .duration(500)
+      .ease("linear")
+      .attr("transform", "translate(0," + y(-18) + ")")
+      .each("end", function(){
+        if(secLoad==20){
+            secLoad = 0;
+        }
+        if(other<chunks.length){
+            pushDown(secLoad+1)
+            other+1;
+        } else{}
+    });
+
+// var onebefore = secLoad-1;
+//     if(onebefore>0){
+//         d3.selectAll(".prefix"+onebefore)
+//           // .attr("transform", null)
+//         .transition()
+//           .duration(500)
+//           .ease("linear")
+//           .attr("transform", "translate(0," + y(-18) + ")")    
+//   }
+}
+ // for(j=0; j<chunks.length; j++){     
+ //  d3.selectAll(".prefix"+j)
+ //    .transition()
+ //      .duration(500)
+ //      .ease("linear")
+ //      .attr("transform", function(d,i){
+ //        if(i<secLoad){
+ //            return "translate(0," + y(-18) + ")"
+ //        }else{ return null }
+ //        })
+ //    }
+ 
+  // pop the old data point off the front
+  // chunks.shift();
+
+
+
+
+
+// for (i=0; i<chunks.length; i++){
+//     d3.selectAll(".prefix"+i)
+//     .transition()
+//     .attr("y", function(d,i){
+//         if(i!=secLoad){
+//             return i*50;
+//         }
+//         else{
+//             return 40;
+//         }
+//     })
+// }
+
+// if(secLoad*40>h){
+//     var onebefore = secLoad;
+//             d3.selectAll(".prefix"+onebefore)
+//             .transition()
+//             .duration(loadTime).attr("y",.1);
+//             }   
+// }
+
+  // var map = d3.scale.linear()
+  // .domain([0,chunks.length])
+  // .range([0,h])
+    // d3.selectAll(".prefix"+secLoad)
+    // .transition()
+    // .attr("y", function(d,i){
+    //     return map(secLoad);
+    // })
+
+// for(i=0; i<chunks.length; i++){
+//     d3.selectAll(".prefix"+i)
+//     .transition()
+//     .attr("y", function(d){
+//         return i*40;
+//     })
+// }
+//     d3.selectAll(".prefix"+secLoad)
+//     .transition()
+//     .attr("y", 10)
+
+
+
 
 loadOne = function(){
     console.log("in here")
@@ -839,7 +1010,7 @@ for(i=0; i<majorNodes.length; i++){
 
             d3.selectAll(".labels"+firstLoad)
             .transition()
-            .duration(loadTime).attr("transform", transThru)
+            .duration(loadTime).attr("transform", transNew)
 
  // var twobefore = firstLoad-40;
  //            if(twobefore>0){

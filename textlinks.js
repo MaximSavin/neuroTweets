@@ -60,8 +60,11 @@ var maxEntries;
 var citeNums = [];
 var radius = 3;
     //Width and height
+var width = window.outerWidth;
+var height = window.innerHeight-50;
 var w = window.outerWidth;
 var h = window.innerHeight-50;
+
 var newCircle;
 
 var color; //=  d3.scale.category20c();
@@ -129,15 +132,17 @@ startTime();
 svg = d3.select("#container")
     .append("svg")
     .attr({
-      "width": "100%",
-      "height": "100%",
+      "width": w,
+      "height": h,
         })
+    // .attr("transform",
+    //   "translate("+ width/4 + "," + 0 + ")");  
  var vis = svg //for the visualization
     .append('svg:g')
     .attr("transform",
       "translate("+ 0 + "," + 0 + ")");  
-// loadData("allresponses.csv", .1)
-loadData("100tweetspull.csv", .1)
+loadData("allresponses.csv", .1)
+// loadData("100tweetspull.csv", .1)
 function loadData(csvName, filterNum){
 citeNums.length = 0;
 keywords.length = 0;
@@ -332,40 +337,27 @@ $("body").keypress(function(){
     (b+=1);
     if (b==1){
         // force.stop();
-        // randomOne = false;
-        // randomTwo = true;
-        // clearInterval(firstLoadVar); //and stop loading stuff in
-        // firstLoad = 0;
-        // if(randomTwo){
-        //     loadTime = 10;
+        // randomOne = true;
+        // if(randomOne){
+        //     loadTime = 1;//500;
         // }
-        // loadOne();
-
-
-        force.stop();
-        randomOne = true;
-        if(randomOne){
-            loadTime = 1;//500;
-        }
-        loadOne();
-    }            
-    if (b==2){
         // force.stop();
         // randomOne = true;
-        // firstLoad = 0;
         // if(randomOne){
         //     loadTime = 1;//500;
         // }
         // loadOne();
-        // force.stop();
-        // randomOne = false;
-        // randomTwo = true;
-        // clearInterval(firstLoadVar); //and stop loading stuff in
-        // firstLoad = 0;
-        // if(randomTwo){
-        //     loadTime = 10;
-        // }
-        // loadOne();
+    }            
+    if (b==2){
+        force.stop();
+        randomOne = false;
+        randomTwo = true;
+        clearInterval(firstLoadVar); //and stop loading stuff in
+        firstLoad = 0;
+        if(randomTwo){
+            loadTime = 100;
+        }
+        loadOne();
     }
     if (b==3){   
           clearInterval(firstLoadVar); //and stop loading stuff in
@@ -619,7 +611,7 @@ function tick() {
       text.attr("transform", transprep);
 }
 function transprep(d) {
-  d.x = w-radius;
+  d.x = width-radius;
   d.y = Math.max(radius, Math.min(h - radius, d.y));   
   return "translate(" + d.x+ "," + d.y + ")";
 }
@@ -739,15 +731,7 @@ var chunks2 = [];
             chunks2.push(firstNChars(50, chunks[i][1]));
         }
     }
-    // if(chunks.length==59){
-            // text
-            // .transition()
-            // .data(chunks)
-            // .attr("class","prefix")
-            // .attr("translate", transAgain)
-            // .text(function(d,i){
-            //     return d[0];
-            // })
+
 for(i=0; i<links.length; i++){
        d3.selectAll(".labels"+i)
        .attr("y",0)
@@ -896,7 +880,6 @@ force.stop();
 }
 
 
-
 loadOne = function(){
     console.log("in here")
     firstLoadVar = setInterval(function(){ 
@@ -917,6 +900,41 @@ loadOne = function(){
         }
     },loadTime)
 } 
+
+
+
+
+function lastNChars(n, str) {
+    var result = str.substr(str.length - Math.min(n, str.length), str.length);
+    if(result.length < str.length) {
+        result = "..." + result;
+    }
+    return result;
+}
+
+function firstNChars(n, str) {
+    if(typeof(str) == 'undefined')
+        return null;
+
+    var result = str.substr(0, Math.min(n, str.length));
+    if(result.length < str.length) {
+        result = result + "...";
+    }
+    return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function shootOut(firstLoad){
     // console.log("shoot out")
@@ -970,28 +988,59 @@ for(i=0; i<majorNodes.length; i++){
             
             d3.selectAll(".labels"+firstLoad)
             .transition()
-            .duration(loadTime).attr("opacity",1);
+            .duration(loadTime)
+            .attr("opacity",1);
 
             d3.selectAll(".labels"+firstLoad)
             .transition()
             .duration(loadTime).attr("transform", transThru);
  
+
+
  var onebefore = firstLoad-20;
             if(onebefore>0){
-            d3.selectAll(".labels"+onebefore)
-            .transition()
-            .duration(loadTime).attr("opacity",.4)
-            .each("end", function(){
-                d3.select(this)
+             d3.selectAll(".labels"+firstLoad)
                 .transition()
-                .duration(10000)
-                .attr("transform",function(d){
-                    d.x = -w;
-                    d.y = Math.max(radius, Math.min(h - radius, d.y));      
-                    return "translate(" + d.x+ "," + d.y + ")";
+                // .delay(loadTime*8)
+                .duration(loadTime)
+                // .text(function(d){ return d.headline })
+                .attr("transform",function(d){  
+                    if(d.x==w/2)
+                    d.x = w/2;
+                    // d.x=map(s)+subradius*Math.cos(jump*2*onebefore);
+                    // d.y=h/2+subradius*Math.sin(jump*onebefore*10);     //doing subrad*2 makes the amp bigger
+                      return "translate(" + d.x+ "," + d.y + ")";  
+                    // return "translate(" + d.x+ "," + d.y + ")";
                 })
-            })
+
+                .each("end", function(){
+                    d3.select(this)
+                    .transition()
+                    // .delay(loadTime*10)
+                    .duration(loadTime*20)
+                    .transition()
+                    .duration(loadTime)
+                    .text("brain")
+                    // .text(function(d){ return d.headline })
+                })
         }
+
+ // var twobefore = firstLoad-40;
+ //            if(twobefore>0){
+ //            d3.selectAll(".labels"+twobefore)
+ //            .transition()
+ //            .duration(loadTime).attr("opacity",.4)
+ //            .each("end", function(){
+ //                d3.select(this)
+ //                .transition()
+ //                .duration(10000)
+ //                .attr("transform",function(d){
+ //                    d.x = -w;
+ //                    d.y = Math.max(radius, Math.min(h - radius, d.y));      
+ //                    return "translate(" + d.x+ "," + d.y + ")";
+ //                })
+ //            })
+ //        }
             d3.selectAll(".link"+firstLoad)
             .transition()
             .duration(loadTime/2).attr("d", linkArc);

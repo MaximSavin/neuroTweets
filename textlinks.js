@@ -110,6 +110,7 @@ var angleVel = 0.23;
 
 var linkArc;
 
+    var term = "brain";
 
 
 function startTime() {
@@ -398,20 +399,11 @@ for (i=0; i<thisData.length; i++){
     }
 }
 }    
-// for (i=0; i<uncommonArr.length; i++){ 
-//     for (j=0; j<uniqueMostKeyed.length; j++){ 
-//         if (uncommonArr[i].indexOf(uniqueMostKeyed[j])!=-1){
-//         links.push({"source":uncommonArr[i],"target":uniqueMostKeyed[j],"headline":tweets[i]}) 
-//     }
-// }
-// }    
+
 firstPrep = true;
     simpleNodes();
 }
-if(itsDone==true){
-    // makeNewNodes();
-}
-// simpleNodes();
+
 console.log(links.length)
 
 }
@@ -447,10 +439,7 @@ var theseHeadlines = [];
 // jump = (Math.PI*2)/links.length; 
 var chunks = [];
 function simpleNodes(){
-
 console.log(links.length);
-
-// $("#titleName").toggle();  
    
 // Compute the distinct nodes from the links.
 links.forEach(function(link) {
@@ -514,7 +503,6 @@ circle = vis.selectAll("node")
     .data(force.nodes())
     .enter().append("circle")
     .attr("class",function(d,i){
-        // nodesMax = force.nodes().length
         howLong.push(d.name);
         thisWeight.push(d.weight);
         maxWeight = d3.max(thisWeight, function(d){ return d; })
@@ -531,34 +519,10 @@ circle = vis.selectAll("node")
         for(j=0; j<uniqueMostKeyed.length; j++){
            if(d.name==uniqueMostKeyed[j]){
                 majorNodes.push(i);
-                return "white";                    
             }
         }
             return "none";
-        // for (k=0; k<uniqueKeywords.length; k++){
-        //     for(j=0; j<d.name.length; j++){
-        //         if(d.name[j]==uniqueKeywords[k] && d.name.length>1){
-        //             return color(k);
-        //         }
-        //     }
-        // }
     })
-    // .attr("stroke", function(d,i){
-    //     for(j=0; j<uniqueMostKeyed.length; j++){
-    //            if(d.name==uniqueMostKeyed[j]){
-    //                 majorNodes.push(i);
-    //                 return "gray";                    
-    //             }
-    //         }
-    //         for (k=0; k<uniqueKeywords.length; k++){
-    //             for(j=0; j<d.name.length; j++){
-    //                 if(d.name[j]==uniqueKeywords[k] && d.name.length>1){
-    //                     return "none";
-    //                 }
-    //             }
-    //         }        
-    // })
-    // .attr("stroke-width",.3)
     .on("dblclick", dblclick)
     .call(drag);
 
@@ -573,7 +537,6 @@ jump = (Math.PI*2)/nodesLength;
     }
 
 console.log("simple nodes")
-
 
 text = vis.selectAll("labels")
     .data(force.nodes())
@@ -614,6 +577,7 @@ function transprep(d) {
   d.x = width-radius;
   d.y = Math.max(radius, Math.min(h - radius, d.y));   
   return "translate(" + d.x+ "," + d.y + ")";
+}
 }
 ktick = function(){
     for(i=0; i<links.length; i++){
@@ -677,45 +641,7 @@ linkArc = function(d) {
 //     });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function lastNChars(n, str) {
-    var result = str.substr(str.length - Math.min(n, str.length), str.length);
-    if(result.length < str.length) {
-        result = "..." + result;
-    }
-    return result;
-}
-
-function firstNChars(n, str) {
-    if(typeof(str) == 'undefined')
-        return null;
-
-    var result = str.substr(0, Math.min(n, str.length));
-    if(result.length < str.length) {
-        result = result + "...";
-    }
-    return result;
-}
-
-
-
 concordNodes = function(){
-    var term = "brain";
 var chunks1=[];
 var chunks2 = [];
     console.log("concordNodes")
@@ -757,8 +683,6 @@ for(i=0; i<links.length; i++){
       return "translate(" + d.x+ "," + d.y + ")";
     }
 }
-
-
            var textOne = vis.selectAll("label")
             .data(chunks)
             .enter().append("text")
@@ -773,7 +697,7 @@ for(i=0; i<links.length; i++){
             .attr("y", function(d,i){
                 return i*40;
             })
-            // .attr("font-size","18px")
+            .attr("font-size","12px")
             .attr("opacity",1)
             .text(function(d,i){
                 if(d[0]!=null){
@@ -792,98 +716,19 @@ for(i=0; i<links.length; i++){
                 return i*40;
             })
             .attr("opacity",1)
-            // .attr("font-size","18px")
+            .attr("font-size","12px")
             .text(function(d,i){
              if(d[1]!=null){
                 return d[1];
                 }else{ return " "}
             })            
 }
-returnNodes = function(){
-    console.log("return nodes")
-                d3.selectAll(".suffix")
-                    .transition()
-                    .duration(2000)
-                    .attr("opacity", .1) 
-                d3.selectAll(".prefix")
-                    .transition()
-                    .duration(2000)
-                    .attr("opacity", .1) 
-for(i=0; i<links.length; i++){
-
-   d3.selectAll(".node"+i)
-        .transition()
-        .duration(2000)
-        .attr("r", function(d,i){
-            for(j=0; j<uniqueMostKeyed.length; j++){
-                if(d.name==uniqueMostKeyed[j]){
-                    return rMap(d.weight);
-                }
-            }
-            return 3;            
-        })
-
-        force.start();
-
-   text
-   // d3.selectAll(".labels"+i)
-   .transition()
-   // .delay(2000)
-   .duration(1000)
-   // .attr("font-size","18pt")
-    .text(function(d,i) {
-        return d.name;
-        // for(j=0; j<uniqueMostKeyed.length; j++){
-        //     if(d.name==uniqueMostKeyed[j]){
-        //         return d.name;
-        //     }
-        // else{
-        // for(k=0; k<majorNodes.length; k++){
-        //     if(i!=k){
-                //make this only if d.headline matches an action word
-                // for(j=0; j<links.length; j++){
-                // for(z=0; z<focusKeywords.length; z++){
-                //     // if(uncommonArr[z]!=null){
-                // if (links[i].split.indexOf(focusKeywords[z])!=-1){
-                //     // console.log("uncommonArr"+uncommonArr[z])
-                //         return focusKeywords[z];
-                //     }
-                //     // else{ return " "}           
-                // }
-                // }
-        //     }
-        // }
-        // }
-        // }
-    }) 
-    .transition()
-    .duration(2000)
-    .each("end", function(){
-        force.start();
-    })   
-}  
-}
-
-
-stopMove = function(){
-force.stop();
-  circle
-  .attr("transform", transOut);
-  text.attr("transform", transOut);   
-   path.attr("d", linkArc);
-
-    function transOut(d) {
-      d.x = w-radius;
-      d.y = h-radius;  
-      return "translate(" + d.x+ "," + d.y + ")";
-    }  
-}
-
 
 loadOne = function(){
     console.log("in here")
     firstLoadVar = setInterval(function(){ 
-    if (firstLoad<=links.length){
+    // if (firstLoad<=links.length){
+    if (firstLoad<=30){
         for(i=0; i<majorNodes.length; i++){
             if (firstLoad==majorNodes[i]){
                 firstLoad++;
@@ -900,41 +745,42 @@ loadOne = function(){
         }
     },loadTime)
 } 
-
-
-
-
-function lastNChars(n, str) {
-    var result = str.substr(str.length - Math.min(n, str.length), str.length);
-    if(result.length < str.length) {
-        result = "..." + result;
-    }
-    return result;
+function transOne(d) {
+  var map = d3.scale.linear()
+  .domain([0,60])
+  .range([w,50])
+    d.x=map(s)+subradius*1.1*Math.cos(jump*2*firstLoad);
+    d.y=h/2+subradius*Math.sin(jump*firstLoad*10);     //doing subrad*2 makes the amp bigger
+      return "translate(" + d.x+ "," + d.y + ")";
+    // d.x=map(s)+subradius*1.2*Math.cos(jump*2*firstLoad);
+    // d.y=h/2+subradius*Math.sin(jump*firstLoad*4);     //doing subrad*2 makes the amp bigger
+    //   return "translate(" + d.x+ "," + d.y + ")";
 }
-
-function firstNChars(n, str) {
-    if(typeof(str) == 'undefined')
-        return null;
-
-    var result = str.substr(0, Math.min(n, str.length));
-    if(result.length < str.length) {
-        result = result + "...";
-    }
-    return result;
+function transThru(d) {
+    d.y = Math.max(radius, Math.min(h - radius, d.y));      
+    d.x = -w;
+  // var map = d3.scale.linear()
+  // .domain([0,links.length])
+  // .range([w,-w])
+  //   d.x=map(firstLoad);
+  //   d.y =Math.max(radius, Math.min(h - radius, d.y));      
+      return "translate(" + d.x+ "," + d.y + ")";
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
+function transNew(d) {
+  var map = d3.scale.linear()
+  .domain([0,60])
+  .range([w,0])
+    d.x=map(s)+firstLoad;
+    d.y =Math.max(radius, Math.min(h - radius, d.y));      
+      return "translate(" + d.x+ "," + d.y + ")";
+}
+//full circle
+// function transNew(d) {
+//     d.x=w/2+subradius*Math.cos(jump*firstLoad);
+//     d.y=h/2+subradius*Math.sin(jump*firstLoad);     
+//       return "translate(" + d.x+ "," + d.y + ")";
+// }
+// }
 
 function shootOut(firstLoad){
     // console.log("shoot out")
@@ -993,37 +839,7 @@ for(i=0; i<majorNodes.length; i++){
 
             d3.selectAll(".labels"+firstLoad)
             .transition()
-            .duration(loadTime).attr("transform", transThru);
- 
-
-
- var onebefore = firstLoad-20;
-            if(onebefore>0){
-             d3.selectAll(".labels"+firstLoad)
-                .transition()
-                // .delay(loadTime*8)
-                .duration(loadTime)
-                // .text(function(d){ return d.headline })
-                .attr("transform",function(d){  
-                    if(d.x==w/2)
-                    d.x = w/2;
-                    // d.x=map(s)+subradius*Math.cos(jump*2*onebefore);
-                    // d.y=h/2+subradius*Math.sin(jump*onebefore*10);     //doing subrad*2 makes the amp bigger
-                      return "translate(" + d.x+ "," + d.y + ")";  
-                    // return "translate(" + d.x+ "," + d.y + ")";
-                })
-
-                .each("end", function(){
-                    d3.select(this)
-                    .transition()
-                    // .delay(loadTime*10)
-                    .duration(loadTime*20)
-                    .transition()
-                    .duration(loadTime)
-                    .text("brain")
-                    // .text(function(d){ return d.headline })
-                })
-        }
+            .duration(loadTime).attr("transform", transThru)
 
  // var twobefore = firstLoad-40;
  //            if(twobefore>0){
@@ -1045,50 +861,13 @@ for(i=0; i<majorNodes.length; i++){
             .transition()
             .duration(loadTime/2).attr("d", linkArc);
        }
-        }
     }
 }
-
-
-
-
-function transOne(d) {
- 
- //  startAngle += 0.015;
- //  var angle = startAngle;
-  var map = d3.scale.linear()
-  .domain([0,60])
-  .range([w,50])
-    d.x=map(s)+subradius*1.1*Math.cos(jump*2*firstLoad);
-    d.y=h/2+subradius*Math.sin(jump*firstLoad*10);     //doing subrad*2 makes the amp bigger
-      return "translate(" + d.x+ "," + d.y + ")";
-    // d.x=map(s)+subradius*1.2*Math.cos(jump*2*firstLoad);
-    // d.y=h/2+subradius*Math.sin(jump*firstLoad*4);     //doing subrad*2 makes the amp bigger
-    //   return "translate(" + d.x+ "," + d.y + ")";
 }
-function transThru(d) {
-  var map = d3.scale.linear()
-  .domain([0,links.length])
-  .range([w,-w])
-    d.x=map(firstLoad);
-    d.y =Math.max(radius, Math.min(h - radius, d.y));      
-      return "translate(" + d.x+ "," + d.y + ")";
-}
-function transNew(d) {
-  var map = d3.scale.linear()
-  .domain([0,60])
-  .range([w,0])
-    d.x=map(s)+firstLoad;
-    d.y =Math.max(radius, Math.min(h - radius, d.y));      
-      return "translate(" + d.x+ "," + d.y + ")";
-}
-//full circle
-// function transNew(d) {
-//     d.x=w/2+subradius*Math.cos(jump*firstLoad);
-//     d.y=h/2+subradius*Math.sin(jump*firstLoad);     
-//       return "translate(" + d.x+ "," + d.y + ")";
-// }
-// }
+
+
+
+
 
 
 $('circle').tipsy({
@@ -1105,645 +884,118 @@ $('circle').tipsy({
          return "Tweet Keywords:"+'<br>'+d.name+'<br>';
     }
 });
+function lastNChars(n, str) {
+    var result = str.substr(str.length - Math.min(n, str.length), str.length);
+    if(result.length < str.length) {
+        result = "..." + result;
+    }
+    return result;
 }
-// $('#clickZoom').fadeIn();
-// var kLabels = false;
-// var allLabels = true;
-// $('#labelsOn').fadeIn();
-// $('#labelsOn').click(function(){  
-//     if(kLabels){
-//         $(".kandellabels").show();        
-//     }
-//     if(allLabels){
-//         $(".labels").show();
-//     }
-// })
 
-// var c = false;
-// $('#citeRate').slideDown();
-// $('#labelsOn').slideDown();
-// $('#focusKandel').slideDown();
+function firstNChars(n, str) {
+    if(typeof(str) == 'undefined')
+        return null;
 
-// $('#citeRate').click(function(){  
-//         allLabels=true;
-//         kLabels = false;        
-
-//     nodesBack();
-//     $("#titlename").show();  
-//     $(".paperTitle").hide();    
-//     $(".kandellabels").hide();        
-//     exitK();
-
-// })
-
-// var k = false;
-// var otherDone = false;
-// $('#focusKandel').click(function(){  
-// $(".labels").hide();
-// $("#titlename").hide();  
-//         allLabels=false;
-//         kLabels = true;
-// if(itsDone==false){
-//     focusKandel();
-// }
-// else{
-//     stopBigNet();
-// }
-
-//     $(".paperTitle").show();  
-//     $("#titlename").hide();               
-// })
-
-
-// citeYScale = d3.scale.linear()
-//     .domain([0, maxNodeCited])
-//     .range([h-padding, h/10]);
-
-// function nodesToOther(){
-//     //HERE MAYBE WORDS SHOULD COME BACK BUT ONLY IF THEY ARE THE MAJOR ONES?
-//     force.stop();
-//     circle.transition()
-//     .attr("transform", newTransform);
-
-//     // text
-//     // .attr("opacity",0);
-//     // .transition()
-//     // .attr("transform", newTransform);
-
-//     path
-//     .transition()
-//     .attr("d", linkArc);
-
-//     function textTransform(d,i){
-//         if(i%2==1){
-//             var thisy = citeYScale(nodeCited[i])-padding*2+Math.random()*i;
-//             return "translate(" + d.x+ "," + thisy + ")";        
-//         } 
-//         else{
-//             var thisy = citeYScale(0)+padding*1.8-Math.random()*i;   
-//             return "translate(" + d.x+ "," + thisy + ")";        
-//         }
-//     }
-
-//     function newTransform(d,i){
-//         if (isNaN(parseInt(d.cites))==false){
-//             d.y = citeYScale(nodeCited[i]); //not links[i].cites
-//             return "translate(" + d.x+ "," + d.y + ")";
-//         }
-//         else{
-//              d.y = citeYScale(0); //not links[i].cites
-//             return "translate(" + d.x+ "," + d.y + ")";           
-//         }
-//     }    
-// }
-
-var p0 = [w/2, h/2, 1000];
-var p1;
-var p2;
-
-// function focusKandel(){
-//     force.stop()
-//     circle.transition()
-//     .duration(4000)
-//     .attr("stroke",function(d){    
-//          if (d.headline=="Cognitive neuroscience and the study of memory"){
-//             newCircle = d3.select(this).transition().attr("class","newClass")
-//             .attr("stroke", "yellow");
-//             console.log(newCircle.attr("x"))
-//    // p7 = [calcX[specialCirc], calcY[specialCirc], 100];
-
-//             return "yellow";
-//         }                  
-//     })    
-//     // .each("end", zoomingTransition());
-//     .each("end", transitionKandel());    
-// }
-
-
-// var loadK;
-// var didLoad = false;
-
-// loadK=setInterval(function () {
-// if(itsDone==true){
-//     loadIt("theseCiteKandel.csv");
-//     didLoad = true;
-// }  
-// if(didLoad==true){
-//     console.log("done")
-//     clearInterval(loadK);
-// }    
-// }, 500);
+    var result = str.substr(0, Math.min(n, str.length));
+    if(result.length < str.length) {
+        result = result + "...";
+    }
+    return result;
+}
 
 
 
 
-// function transitionKandel(){
-//    circle.transition()
-//     .duration(4000)
-//     .attr("transform", newTransform)
-//      .each("end", function(){
-//         itsDone = true;         
-//     })
-
-//     // text
-//     // .transition()
-//     // .duration(4000)    
-//     // .attr("transform", function(){
-//     //     newTransform;
-//     //     if(d.y>h/1.5){
-//     //         d3.select(this)
-//     //         .attr("opacity",0)
-//     //     }
-//     // })
-//     // .each("end", function(){
-//     //     text.attr("opacity",0);
-//     // })
-
-//     path
-//     .transition()
-//     .duration(4000)    
-//     .attr("d", linkArc);
-//     // .each("end",loadIt())
-// var t = [1];
-// var selectedPaper = "Selected Paper: Cognitive neuroscience and the study of memory";
-// thisPaperName = getTextWidth(selectedPaper, "12px Helvetica Neue");  // reports 84
-
-// var newLabel = vis.selectAll("newlabel")
-//     .data(t)
-//     .enter()
-//     .append("text").attr("class","paperTitle")
-//     .attr("x", w/2-thisPaperName/2)
-//     .attr("y", h/10)
-//     .attr("fill","gray")
-//     .text("Selected Paper: Cognitive neuroscience and the study of memory")
-
-// var newLabel = vis.selectAll("newlabel")
-//     .data(t)
-//     .enter()
-//     .append("text").attr("class","paperTitle")
-//     .attr("x", w/2-thisPaperName/2)
-//     .attr("y", h/7.5)
-//     .attr("fill","gray")
-//     .text("Principal Investigator: Eric Kandel")
-  
-// newCircle
-//     .transition()
-//     .duration(500)
-//     .attr("r", function(d){ 
-//         p1 = [d.x, d.y, 1000];
-//         console.log(d.x+"x"+d.y+"y")
-//         return rMap(d.cites)/8;
-//     })
-//     .each("end", function(){
-//             // zoomingTransition();    
-//         d3.select(this)
-//         .transition()
-//         .duration(500)
-//         .attr("r",radius)
-//         .each("end", function(){
-//             d3.select(this)
-//             .transition()
-//             .duration(500)
-//             .attr("r",function(d){ 
-//                 p2 = [d.x, d.y, 1000];                
-//                 return rMap(d.cites)/8;
-//             })
-//             .each("end", function(){
-//                 d3.select(this)
-//                 .transition()
-//                 .duration(1000)
-//                 .attr("class","otherClass")                
-//                 .attr("transform",otherTransform)
-//             })
-//         })        
-//     })
-// // circle
-// // .transition()
-// // .duration(8000)
-// // .delay(4000)
-// // .attr("transform",newTransform)
-// // .each("end", loadIt("theseCiteKandel.csv"));//loadIt("citedByKandel.csv"
 
 
-//     function newTransform(d,i){
-//             d.y = h; //not links[i].cites
-//             return "translate(" + d.x+ "," + d.y + ")";
-//     } 
-
-//     otherTransform = function (d,i){
-//             d.y = h/10; //not links[i].cites
-//             d.x = w/2-thisPaperName/2;
-//             return "translate(" + d.x+ "," + d.y + ")";
-//     }     
-
-// }
 
 
-// function zoomingTransition(){
-//     svg.call(transition, p0, p1);
-// }
-// function zoomingTransition2(){
-//     svg.call(transition, p1, p2);
-// }
-// var center = [w/2,h/2];
 
-// function transition(svg, start, end) {
 
-// var  i = d3.interpolateZoom(start, end);
-//     vis
-//         .attr("transform", transform(start))
-//         .transition()
-//         .duration(i.duration * 2)
-//         .attrTween("transform", function() { 
-//             return function(t) { 
-//                 return transform(i(t)); 
-//             }; 
-//         })
-//         .each("end", transitionKandel()) 
 
-//   function transform(p) {
-//     var k = h / p[2]; //*2;
-//     return "translate(" + (center[0] - p[0] * k) + "," + (center[1] - p[1] * k) + ")scale(" + k + ")";
-//     }
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+returnNodes = function(){
+    console.log("return nodes")
+                d3.selectAll(".suffix")
+                    .transition()
+                    .duration(2000)
+                    .attr("opacity", .1) 
+                d3.selectAll(".prefix")
+                    .transition()
+                    .duration(2000)
+                    .attr("opacity", .1) 
+   force.start();
+   text
+   .transition()
+   .duration(1000)
+    .text(function(d,i) {
+        return d.headline;
+    }) 
+    .transition()
+    .duration(2000)
+    .each("end", function(){
+        force.start();
+    })   
+}
+stopMove = function(){
+force.stop();
+  circle
+  .attr("transform", transOut);
+  text.attr("transform", transOut);   
+   path.attr("d", linkArc);
+
+    function transOut(d) {
+      d.x = w-radius;
+      d.y = h-radius;  
+      return "translate(" + d.x+ "," + d.y + ")";
+    }  
+}
 
 
 loadIt = function(whichcsv){
     force.stop();
 console.log("loading")
-// loadData("citedByKandel.csv", .5); 
 loadData(whichcsv, .3);       
 }
 
 function nodesBack(){
     force.start();
     overallView=true;
-    // console.log(newCircle)
-    // console.log(d3.select(newCircle));
-    // doOther();
 }
-// doOther = function(){
-// d3.select(".otherClass")
-//     .transition()
-//     .duration(500)
-//     .attr("opacity", function(d){ 
-//         d3.select(this).classed("fixed", d.fixed = true)
-//         whatis[0]=d.x;
-//         whatis[1]=d.y;
-//     });
-// }
-// if(whatis.length>0){
-//     minK(whatis)
-// }
-// }
-
-
-var kforce;
-var kcircle, kpath, ktext;
-// function kandelNodesBack(){
-// newCircle
-//     .transition()
-//     .duration(500)
-//     .attr("r", function(d){ 
-//         p1 = [d.x, d.y, 1000];
-//         console.log(d.x+"x"+d.y+"y")
-//         return rMap(d.cites)/8;
-//     })
-//     .each("end", function(){
-//             // zoomingTransition();    
-//         d3.select(this)
-//         .transition()
-//         .duration(500)
-//         .attr("r",radius)
-//         .each("end", function(){
-//             d3.select(this)
-//             .transition()
-//             .duration(500)
-//             .attr("r",function(d){ 
-//                 p2 = [d.x, d.y, 1000];                
-//                 return rMap(d.cites)/8;
-//             })
-//             .each("end", function(){
-//                 d3.select(this)
-//                 .transition()
-//                 .duration(500)
-//                 .attr("class","otherClass")                
-//                 .attr("transform",otherTransform)
-//             })
-//         })        
-//     })
-//     otherTransform = function (d,i){
-//             d.y = h/10; //not links[i].cites
-//             d.x = w/2-thisPaperName/2;
-//             return "translate(" + d.x+ "," + d.y + ")";
-//     }     
-
-//     kforce.start();
-// }
-// function makeNewNodes(){
-//     console.log("make new nodes")
-// var links = [];
-
-// for (i=0; i<thisData.length; i++){ 
-//     for (j=0; j<uniqueMostKeyed.length; j++){ 
-//         if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
-//             links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"sourceTitle":thisData[i].Sourcetitle.toLowerCase(), "cites":parseInt(thisData[i].Cited), "headline":thisData[i].Title, "authors":thisData[i].Authors}) 
-//     }
-// }
-// }
-// console.log(links.length);
-// // if(links.length==){ 
-// populateNewNodes()
-// // }
-
-// function populateNewNodes(){
-// if (showReset==true){
-//     resetZoom();
-// }
-// var t = [1];
-// // var thisPaperName = getTextWidth(thisText, "10px Helvetica Neue");  // reports 84
-
-// var newLabel = vis.selectAll("newlabel")
-//     .data(t)
-//     .enter()
-//     .append("text").attr("class","paperTitle")
-//     .attr("x", w/2-thisPaperName/2)
-//     .attr("y", h/6)
-//     .attr("fill","gray")
-//     .text("All papers that cite Kandel's, grouped by major keywords")
-
-// console.log("populateNewNodes")
-// var nodes = {};
-// var drag;
-// var kmaxNodeCited;  
-// var knodeCited = [];
-
-// // Compute the distinct nodes from the links.
-// links.forEach(function(link) {
-//     // console.log(link.source+link.target);
-//   link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, cites:link.cites, sTitle:link.sourceTitle, headline:link.headline, authors:link.authors});
-//   link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
-// });
-// var kTicked = false;
-// kforce = d3.layout.force()
-//     .nodes(d3.values(nodes))
-//     .links(links)
-//     .size([w, h])
-//     .linkDistance(20)
-//     .charge(-200)
-//     .on("tick",ktick)
-//     .start();
-// console.log(nodes)
-// drag = kforce.drag() 
-//     .on("dragstart", dragstart);   
-
-// // console.log(nodes)
-// // console.log(links)
-
-// var thisMap;
-// var thisWeight = [];
-// var maxWeight;
-// var rMap; 
-// var khowLong = [];
-
-// kpath = vis.selectAll("kpath")
-//     .data(kforce.links())
-//     .enter().append("path")
-//     .attr("class","klink") 
-//     .attr("opacity",.1)
-//     .attr("stroke", function(d,i){
-//         // console.log(d);
-//         for (k=0; k<uniqueTypes.length; k++){
-//            if(d.sourceTitle==uniqueTypes[k]){
-//                 return color(k);
-//            }
-//         }
-//         if(howLong.length>0){
-//         if(howLong[i][0].length==1){
-//             return "white";
-//         }        
-//         }
-//     })    
-//     // .attr("fill","silver")
-
-// kcircle = vis.selectAll("kcircle")
-//     .data(kforce.nodes())
-//     .enter().append("circle")
-//     .attr("class","knode")  
-//     .attr("r", function(d,i){
-//         khowLong.push(d.name);
-//         thisWeight.push(d.weight);
-//         maxWeight = d3.max(thisWeight, function(d){ return d; })
-//         rMap = d3.scale.linear()
-//             .domain([0,maxWeight])
-//             .range([radius, radius*9])  
-
-//         return radius/10;
-//     })
-//     .attr("fill", function(d,i){
-
-//         if(isNaN(parseInt(d.cites))){
-//             knodeCited.push(0);
-//         }
-//         else {
-//             knodeCited.push(parseInt(d.cites))
-//         }
-//         kmaxNodeCited = d3.max(knodeCited, function(d){ return d; })
-
-//         for (k=0; k<uniqueTypes.length; k++){
-//            if(d.sTitle==uniqueTypes[k]){
-//                 return color(k);
-//            }
-//         }
-//         if(khowLong.length>0){
-//         if(khowLong[i][0].length==1){
-//             return "white";
-//         }        
-//         }
-//     })
-//      .attr("stroke", function(d,i){
-//         if(khowLong[i][0].length==1){
-//             return "black";
-//         } 
-//         if(khowLong[i][0].length>1){
-//             return "none";
-//         }   
-//     })   
-//     .attr("stroke-width",.3)
-//     .attr("opacity", function(d,i){
-//         thisMap = d3.scale.linear()
-//             .domain([0,kmaxNodeCited])
-//             .range([.9, 1])  
-//         return thisMap(knodeCited[i]);       
-//     })
-
-//     .on("dblclick", dblclick)
-//     .call(drag);
-
-//     kcircle
-//         .transition()
-//         .duration(2000)
-//         .attr("r", function(d,i){
-//             if(khowLong[i][0].length==1){
-//                 return rMap(d.weight);
-//             }
-//             return radius;
-//         });
-
-//     function dblclick(d) {
-//         d3.select(this).classed("fixed", d.fixed = false);
-//     }
-//     function dragstart(d) {
-//         d3.select(this).classed("fixed", d.fixed = true);
-//     }
-
-// // text = svg.append("g").selectAll("text")
-// ktext= vis.selectAll("ktext")
-//     .data(kforce.nodes())
-//     .enter().append("text")
-//     .attr("class","kandellabels")
-//     .attr("x", 8)
-//     .attr("y", ".31em")
-//     .text(function(d,i) {
-//     if(khowLong.length>1){
-//         if(khowLong[i][0].length==1){
-//              return d.name;           
-//         }        
-//     } 
-//     });
-
-
-// $('circle').tipsy({
-//     gravity: 'w', 
-//     html: true, 
-//     delayIn: 500, 
-//     title: function() {
-
-//         var d = this.__data__;  
-//             console.log(d)
-//         if (d.name[0].length==1){
-//          return "Major Keyword: "+d.name;
-//         }
-//          return "Paper Keywords:"+'<br>'+d.name+'<br>'+'<br>'+"Title:"+ '<br>'+d.headline;
-//     }
-// });
-// }
-// exitK = function exitKandel(){
-//     kforce.stop()
-//     transitionKOut();    
-// }
-
-// function transitionKOut(){
-//     console.log("k out")
-
-//    kcircle.transition()
-//     .duration(3000)
-//     .attr("opacity",0)
-
-//     // ktext
-//     // .attr("opacity",0)
-
-//     // kpath
-//     // .transition()
-//     // .duration(3000)    
-//     // .attr("fill","none")
-//     // .attr("stroke-opacity",.1)
-    
-//     // d3.selectAll(".paperTitle").attr("opacity",0)
-    
-// // }
-// // function transitionKOut(){
-// //     console.log("k out")
-
-//    kcircle.transition()
-//     .duration(4100)
-//     .attr("transform", newTransform);
-
-// //     ktext
-// //     .attr("opacity",0)
-
-//     kpath
-//     .transition()
-//     .duration(4000)    
-//     .attr("d", linkArc)
-    
-// //     d3.selectAll(".paperTitle").attr("opacity",0)
-    
-//     function newTransform(d,i){
-//             d.y = h; //not links[i].cites
-//             return "translate(" + d.x+ "," + d.y + ")";
-//     }    
-// }
-
-// minK = function minimizeK(whatis){
-
-//     console.log("minK")
-//     if (overallView==true){ //if big network is shown
-//         kforce
-//             .size([radius/2, radius/2]) //same parameters as kandel circle
-//             .linkDistance(radius/4)
-//             .charge(-1)
-//             .on("tick",ktick)
-//             .start();
-
-//        kcircle
-//             .transition()
-//             .duration(4000)
-//             .attr("r",radius/8)
-//             .attr("cx", whatis[0])
-//             .attr("cy",whatis[1])            
-//             .attr("transform", minTransform)
-
-
-//         kpath
-//             .transition()
-//             .duration(4000)
-//             .attr("transform", "translate(" + (whatis[0]) + ","+(whatis[1])+")")
-//             .attr("d", linkArc)
-
-//     }
-// //endoffunction
-// }
-// function mintick() {
-//   kpath
-//   .attr("d", linkArc);
-//   kcircle
-//   .attr("transform", minTransform)
-
-//   // ktext
-//   // .attr("transform", minTransform);
-// }
-// // // Use elliptical arc path segments to doubly-encode directionality.
-// function ktick() {
-//   kpath
-//   .attr("d", linkArc);
-//   kcircle
-//   .attr("transform", transform);
-//   ktext
-//   .attr("transform", transform);
-// }
-// function minTransform(d) {
-//   // d.x = w/4;
-//   // d.y = h/2;      
-//   return "translate(" + d.x+ "," + d.y + ")";
-// }
-// function transform(d) {
-//   d.x =Math.max(radius, Math.min(w - radius, d.x));
-//   d.y =Math.max(radius, Math.min(h - radius, d.y));      
-//   return "translate(" + d.x+ "," + d.y + ")";
-// }
-// }
-
-
-
-
-
-
-
-
-
-
-
 
 
 function stopBigNet(){
@@ -1764,21 +1016,10 @@ force.stop()
     .duration(2000)    
     .attr("d", linkArc);
 
-// d3.selectAll(".otherClass")
-//     .transition()
-//     .duration(1000)
-//     .attr("transform",otherTransform)
-
     function newTransform(d,i){
             d.y = h; //not links[i].cites
             return "translate(" + d.x+ "," + d.y + ")";
     } 
-
-    // otherTransform = function (d,i){
-    //         d.y = h/10; //not links[i].cites
-    //         d.x = w/2-thisPaperName/2;
-    //         return "translate(" + d.x+ "," + d.y + ")";
-    // }         
 }
 
 

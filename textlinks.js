@@ -370,8 +370,9 @@ $("body").keypress(function(){
        concordNodes();
    }
    if(b==4){
-    pushDown(secLoad);
-        // loadTwo();
+    // pushDown(secLoad);
+            loadTime = 1000;
+        loadTwo();
         // firstPrep = false;
         // secondPrep = true;
         //   clearInterval(firstLoadVar); //and stop loading stuff in
@@ -738,7 +739,9 @@ for(i=0; i<links.length; i++){
             var textTwo = vis.selectAll("label")
             .data(chunks)
             .enter().append("text")
-            .attr("class","suffix")
+            .attr("class",function(d,i){ 
+                return "suffix"+i
+            })
             .attr("text-anchor","start")
             .attr("x",function(d,i){
                 return w/2+getTextWidth(term)*2; //+getTextWidth(d[1]);//getTextWidth(term)*2; //getTextWidth(d[1])
@@ -757,33 +760,79 @@ for(i=0; i<links.length; i++){
 }
 
 
-// loadTwo = function(){
-//     console.log("in here")
-//     secLoadVar = setInterval(function(){ 
-//     // if (firstLoad<=links.length){
-//     if (secLoad<=chunks.length){
-//         for(i=0; i<majorNodes.length; i++){
-//             if (secLoad==majorNodes[i]){
-//                 secLoad++;
-//             }
-//             else{            
-//                 // var oneTweet = links[firstLoad];
-//                 pushDown(secLoad); //store inner subjects is the loading function for the big data      
-//                 secLoad++;
-//             }
-//         }
-//     } 
-//         else {
-//           clearInterval(secLoadVar); //and stop loading stuff in
-//         }
-//     },loadTime)
-// } 
-var other = 0;
+loadTwo = function(){
+    secLoadVar = setInterval(function(){ 
+    console.log("in here")
+    // if (firstLoad<=links.length){
+    // if (secLoad<=chunks.length){
+    // if (chunks.length*40/h>secLoad){
+        if(secLoad<=17){
+        console.log(secLoad)
+        // for(i=0; i<majorNodes.length; i++){
+        //     if (secLoad==majorNodes[i]){
+        //         secLoad++;
+        //     }
+            // else{      
+                secLoad = secLoad+1;      
+                // var oneTweet = links[firstLoad];
+                pushDown(secLoad); //store inner subjects is the loading function for the big data      
+            // }
+        }
+        else {
+          clearInterval(secLoadVar); //and stop loading stuff in
+        }
+    },loadTime*3)
+} 
+
 function pushDown(secLoad){
-    console.log(secLoad)
- var y = d3.scale.linear()
-    .domain([0, chunks.length - 1])
-    .range([0, h]);
+    // console.log(secLoad)
+ // var y = d3.scale.linear()
+ //    .domain([0, chunks.length - 1])
+ //    .range([0, h]);
+
+ // for (i=0; i<secLoad; i++){
+ for (j=0; j<secLoad*40; j++){
+        d3.selectAll(".suffix"+j).attr("transform",null)
+        .transition()
+          .duration(loadTime/3)
+          .ease("linear")
+          .attr("transform", function(d,i){
+                return "translate(0," + (-h*secLoad) + ")"
+        })
+            // }
+            // if(j>chunks.length/4&&j<chunks.length/2){
+            //     return "translate(0," + (-h*17/2) + ")"
+            // }
+            // if(j>chunks.length/2&&j<chunks.length){
+            //     return "translate(0," + (-h*17) + ")"
+            // }
+}
+}
+
+
+        // .each("end", function(){
+        //     if(secLoad<chunks.length){
+        //     pushDown(secLoad+1)
+        //     } else{}
+        // });
+        // d3.selectAll(".prefix"+i).attr("transform",null)
+        // .transition()
+        //   .duration(20000)
+        //   .ease("linear")
+        //   .attr("transform", function(d){
+        //     return "translate(0," + (-h*17) + ")"
+        // })       
+      
+
+
+
+
+
+
+
+
+
+
   // push a new data point onto the back
   // chunks.push(chunks[secLoad]);
 
@@ -794,6 +843,9 @@ function pushDown(secLoad){
  //      .ease("linear")
  //      .attr("transform", "translate(0," + y(-18) + ")")
   // redraw the line, and slide it to the left
+
+
+//kindaworks
       // for (i=0; i<secLoad; i++){
       //   d3.selectAll(".prefix"+i)
       //   .transition()
@@ -803,24 +855,17 @@ function pushDown(secLoad){
       //       return "translate(0," + y(-18) + ")"
       //   })         
       // }
-
-
-
-  d3.selectAll(".prefix"+secLoad)
-      .attr("transform", null)
-    .transition()
-      .duration(500)
-      .ease("linear")
-      .attr("transform", "translate(0," + y(-18) + ")")
-      .each("end", function(){
-        if(secLoad==20){
-            secLoad = 0;
-        }
-        if(other<chunks.length){
-            pushDown(secLoad+1)
-            other+1;
-        } else{}
-    });
+  // d3.selectAll(".prefix"+secLoad)
+  //     .attr("transform", null)
+  //   .transition()
+  //     .duration(500)
+  //     .ease("linear")
+  //     .attr("transform", "translate(0," + y(-18) + ")")
+  //     .each("end", function(){
+  //       if(secLoad<chunks.length){
+  //       pushDown(secLoad+1)
+  //       } else{}
+  //   });
 
 // var onebefore = secLoad-1;
 //     if(onebefore>0){
@@ -831,7 +876,7 @@ function pushDown(secLoad){
 //           .ease("linear")
 //           .attr("transform", "translate(0," + y(-18) + ")")    
 //   }
-}
+// }
  // for(j=0; j<chunks.length; j++){     
  //  d3.selectAll(".prefix"+j)
  //    .transition()

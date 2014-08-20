@@ -799,6 +799,14 @@ function pushDown(secLoad){
           .attr("transform", function(d,i){
                 return "translate(0," + (-h*secLoad) + ")"
         })
+
+        d3.selectAll(".prefix"+j).attr("transform",null)
+        .transition()
+          .duration(loadTime/3)
+          .ease("linear")
+          .attr("transform", function(d,i){
+                return "translate(0," + (-h*secLoad) + ")"
+        })
             // }
             // if(j>chunks.length/4&&j<chunks.length/2){
             //     return "translate(0," + (-h*17/2) + ")"

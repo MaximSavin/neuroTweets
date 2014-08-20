@@ -906,6 +906,9 @@ function pushDown(secLoad){
                 return "translate(0," + (-h*secLoad) + ")"
         })
 
+
+
+
       d3.selectAll(".brain"+j)
        .transition()
        .duration(loadTime/3)

@@ -552,8 +552,8 @@ text = vis.selectAll("labels")
     .attr("class",function(d,i){
         return "labels"+i;
     })
-    .attr("x", 8)
-    .attr("y", ".31em")
+    .attr("x", 0)
+    .attr("y", 0)
     .attr("fill",function(d,i){
         // for (j=0; j<uniqueMostKeyed.length; j++){ 
         //     if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
@@ -675,8 +675,14 @@ for(i=0; i<links.length; i++){
        .duration(2000)
        .attr("opacity",1)
         .text("brain")
-            .attr("text-anchor","middle")
+        .attr("text-anchor","middle")
         .attr("transform", transAgain)
+        .each("end", function(){
+            d3.select(this)
+            .transition()
+            .duration(500)
+            .attr("opacity",0)
+        })
 
        d3.selectAll(".node"+i)
        .transition()
@@ -694,10 +700,39 @@ for(i=0; i<links.length; i++){
       return "translate(" + d.x+ "," + d.y + ")";
     }
 }
+
+        var textBrain = vis.selectAll("label")
+            .data(chunks)
+            .enter().append("text")
+            .attr("class",function(d,i){ 
+               return "brain"+i; })
+            .attr("x", w/2)           
+            .attr("y", function(d,i){
+                return i*40;
+            })
+            .attr("text-anchor","middle")
+            .attr("font-size","18px")
+            .attr("opacity",0)
+    .attr("fill",function(d,i){
+        for (k=0; k<uniqueKeywords.length; k++){
+            for(j=0; j<links[i].split.length; j++){
+                if(links[i].split[j]==uniqueKeywords[k] && links[i].split.length>1){
+                    return color(k);
+                }
+            }
+        }
+    })
+            .transition()
+            .delay(1900)
+            .duration(500)
+            .attr("opacity",1)
+            .text("brain")
+
            textOne = vis.selectAll("label")
             .data(chunks)
             .enter().append("text")
-            .attr("class",function(d,i){ console.log(i); return "prefix"+i; })
+            .attr("class",function(d,i){
+                return "prefix"+i; })
             .attr("x", function(d,i){
                 if(d[0]==null){
                     return 0;
@@ -807,14 +842,16 @@ function pushDown(secLoad){
           .attr("transform", function(d,i){
                 return "translate(0," + (-h*secLoad) + ")"
         })
-            // }
-            // if(j>chunks.length/4&&j<chunks.length/2){
-            //     return "translate(0," + (-h*17/2) + ")"
-            // }
-            // if(j>chunks.length/2&&j<chunks.length){
-            //     return "translate(0," + (-h*17) + ")"
-            // }
-}
+
+      d3.selectAll(".brain"+j)
+       .transition()
+       .duration(loadTime/3)
+        .ease("linear")
+       // .attr("x",Math.random()*2)
+          .attr("transform", function(d,i){
+                return "translate(0," + (-h*secLoad) + ")"
+        })
+      }
 }
 
 

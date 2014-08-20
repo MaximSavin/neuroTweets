@@ -147,8 +147,8 @@ svg = d3.select("#container")
     .append('svg:g')
     .attr("transform",
       "translate("+ 0 + "," + 0 + ")");  
-loadData("allresponses.csv", .1)
-// loadData("100tweetspull.csv", .1)
+// loadData("allresponses.csv", .1)
+loadData("100tweetspull.csv", .1)
 function loadData(csvName, filterNum){
 citeNums.length = 0;
 keywords.length = 0;
@@ -356,10 +356,15 @@ $("body").keypress(function(){
     }            
     if (b==2){
         force.stop();
-        randomOne = false;
-        randomTwo = true;
+        randomOne = true;
+        randomTwo = false;
+        // randomOne = false;
+        // randomTwo = true;
         clearInterval(firstLoadVar); //and stop loading stuff in
         firstLoad = 0;
+        if(randomOne){
+            loadTime = 100;
+        }
         if(randomTwo){
             loadTime = 100;
         }
@@ -554,12 +559,7 @@ text = vis.selectAll("labels")
     })
     .attr("x", 0)
     .attr("y", 0)
-    .attr("fill",function(d,i){
-        // for (j=0; j<uniqueMostKeyed.length; j++){ 
-        //     if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
-        //             return color(j);
-        //     }
-        // }    
+    .attr("fill",function(d,i){  
         for (k=0; k<uniqueKeywords.length; k++){
             for(j=0; j<d.name.length; j++){
                 if(d.name[j]==uniqueKeywords[k] && d.name.length>1){
@@ -570,9 +570,6 @@ text = vis.selectAll("labels")
     })
     .attr("opacity",1)
     .text(function(d,i) {
-        // if(d.name!="null"){
-        //     return d.name.join(" ")
-        // }
         return d.split;
     })
 
@@ -650,13 +647,22 @@ linkArc = function(d) {
 
 //     });
 
+var textSpecial;
 
 concordNodes = function(){
 var chunks1=[];
 var chunks2 = [];
+var specialWord = [];
     console.log("concordNodes")
  
         for(var i=0; i<tweets.length; i++) {
+                // for (k=0; k<uncommonArr.length; k++){
+                //     for(j=0; j<links[i].split.length; j++){
+                //         if(links[i].split[j]==uncommonArr[k] && links[i].split.length>1){
+                //             specialWord[i]= (uncommonArr[k]);
+                //         }
+                //     }
+                // }            
         if(typeof(tweets[i]) == 'undefined')
             return;
 
@@ -669,6 +675,7 @@ var chunks2 = [];
     }
 
 for(i=0; i<links.length; i++){
+
        d3.selectAll(".labels"+i)
        .attr("y",0)
        .transition()
@@ -713,21 +720,22 @@ for(i=0; i<links.length; i++){
             .attr("text-anchor","middle")
             .attr("font-size","18px")
             .attr("opacity",0)
-    .attr("fill",function(d,i){
-        for (k=0; k<uniqueKeywords.length; k++){
-            for(j=0; j<links[i].split.length; j++){
-                if(links[i].split[j]==uniqueKeywords[k] && links[i].split.length>1){
-                    return color(k);
+            .attr("fill",function(d,i){
+
+                for (k=0; k<uniqueKeywords.length; k++){
+                    for(j=0; j<links[i].split.length; j++){
+                        if(links[i].split[j]==uniqueKeywords[k] && links[i].split.length>1){
+                            return color(k);
+                        }
+                    }
                 }
-            }
-        }
-    })
+            })
             .transition()
             .delay(1900)
             .duration(500)
             .attr("opacity",1)
             .text("brain")
-
+console.log(specialWord)
            textOne = vis.selectAll("label")
             .data(chunks)
             .enter().append("text")
@@ -791,7 +799,62 @@ for(i=0; i<links.length; i++){
              if(d[1]!=null){
                 return d[1];
                 }else{ return " "}
-            })        
+            })
+
+
+
+
+
+
+
+var fisheye = d3.fisheye.circular()
+      .radius(120);
+      // fisheye.focus([w/2, h/2]);
+
+
+
+                  var specialX = d3.scale.linear()
+                    .domain([0, specialWord.length])
+                    .range([0, w]); 
+                  // var specialY = d3.scale.linear()
+                  //   .domain([0, specialWord.length])
+                  //   .range([0, h]); 
+textSpecial = vis.selectAll("label")
+            .data(specialWord)
+            .enter().append("text")
+            .attr("class",function(d,i){ 
+               return "special"+i; })
+            .attr("x", w/2)           
+            .attr("y", function(d,i){
+                return i*40;
+            })
+            .attr("text-anchor","middle")
+            .attr("font-size","18px")
+            .attr("opacity",0)
+            .attr("fill",function(d,i){
+                for (k=0; k<uniqueKeywords.length; k++){
+                    for(j=0; j<links[i].split.length; j++){
+                        if(links[i].split[j]==uniqueKeywords[k] && links[i].split.length>1){
+                            return color(k);
+                        }
+                    }
+                }
+            })
+            .transition()
+            .delay(2300)
+            .duration(1000)
+            .text(function(d,i){
+                return d;
+            })
+                .attr("opacity",0)
+
+
+                // .attr("x", function(d,i){                  
+                //     return w/2+Math.random()*d.length;
+                // })
+                // .attr("y", function(d,i){                  
+                //     return Math.random()*specialY(i);
+                // })
 }
 
 
@@ -851,7 +914,25 @@ function pushDown(secLoad){
           .attr("transform", function(d,i){
                 return "translate(0," + (-h*secLoad) + ")"
         })
-      }
+
+        // d3.selectAll(".special"+j)
+        //             .transition()
+        //             .duration(loadTime/10)
+        //             .attr("opacity",1)
+        //             .transition()
+        //             .duration(loadTime)
+        //             .ease("linear")
+        //             .attr("font-size", 24*(Math.sqrt(s+1))+"pt")
+        //             // .attr("y",0)
+        //             .each("end", function(){
+        //                 d3.select(this)
+        //                 .transition()
+        //                 .duration(loadTime/3)
+        //             .ease("linear")
+        //             .attr("font-size", 24/(Math.sqrt(s+1))+"pt")//24/(j/13)+"pt")
+        //                 .attr("opacity",0)
+        //             })
+    }
 }
 
 
@@ -988,8 +1069,8 @@ function pushDown(secLoad){
 loadOne = function(){
     console.log("in here")
     firstLoadVar = setInterval(function(){ 
-    // if (firstLoad<=links.length){
-    if (firstLoad<=30){
+    if (firstLoad<=links.length){
+    // if (firstLoad<=30){
         for(i=0; i<majorNodes.length; i++){
             if (firstLoad==majorNodes[i]){
                 firstLoad++;
@@ -1010,7 +1091,7 @@ function transOne(d) {
   var map = d3.scale.linear()
   .domain([0,60])
   .range([w,50])
-    d.x=map(s)+subradius*1.1*Math.cos(jump*2*firstLoad);
+    d.x=map(s)+subradius*Math.cos(jump*2*firstLoad); //subradius*1.1
     d.y=h/2+subradius*Math.sin(jump*firstLoad*10);     //doing subrad*2 makes the amp bigger
       return "translate(" + d.x+ "," + d.y + ")";
     // d.x=map(s)+subradius*1.2*Math.cos(jump*2*firstLoad);
@@ -1027,6 +1108,14 @@ function transThru(d) {
   //   d.y =Math.max(radius, Math.min(h - radius, d.y));      
       return "translate(" + d.x+ "," + d.y + ")";
 }
+
+//full circle
+// function transNew(d) {
+//     d.x=w/2+subradius*Math.cos(jump*firstLoad);
+//     d.y=h/2+subradius*Math.sin(jump*firstLoad);     
+//       return "translate(" + d.x+ "," + d.y + ")";
+// }
+// }
 function transNew(d) {
   var map = d3.scale.linear()
   .domain([0,60])
@@ -1035,15 +1124,8 @@ function transNew(d) {
     d.y =Math.max(radius, Math.min(h - radius, d.y));      
       return "translate(" + d.x+ "," + d.y + ")";
 }
-//full circle
-// function transNew(d) {
-//     d.x=w/2+subradius*Math.cos(jump*firstLoad);
-//     d.y=h/2+subradius*Math.sin(jump*firstLoad);     
-//       return "translate(" + d.x+ "," + d.y + ")";
-// }
-// }
-
 function shootOut(firstLoad){
+
     // console.log("shoot out")
 for(i=0; i<majorNodes.length; i++){
     if (firstLoad==majorNodes[i]){
@@ -1075,7 +1157,7 @@ for(i=0; i<majorNodes.length; i++){
             .transition()
             .duration(loadTime).attr("transform", transOne);
             var onebefore = firstLoad-20;
-            if(onebefore>0){
+            if(onebefore>=0){
             d3.selectAll(".labels"+onebefore)
             .transition()
             .duration(loadTime).attr("opacity",.1);

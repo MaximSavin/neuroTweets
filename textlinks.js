@@ -67,7 +67,7 @@ var radius = 3;
     //Width and height
 var width = window.outerWidth;
 var height = window.innerHeight-50;
-var w = window.outerWidth;
+var w = window.outerWidth-50;
 var h = window.innerHeight-50;
 
 var newCircle;
@@ -115,8 +115,10 @@ var angleVel = 0.23;
 
 var linkArc;
 
-    var term = "brain";
+    var term = "Brain";
+    var term2 = "brain"
 
+var prepText;
 
 function startTime() {
     var today=new Date();
@@ -126,7 +128,7 @@ function startTime() {
     m = checkTime(m);
     s = checkTime(s);
     // document.getElementById('txt').innerHTML = h+":"+m+":"+s;
-    var t = setTimeout(function(){startTime()},500);
+    var t = setTimeout(function(){startTime()},1);
 }
 function checkTime(i) {
     if (i<10) {i = "0" + i};  // add zero in front of numbers < 10
@@ -148,7 +150,7 @@ svg = d3.select("#container")
     .attr("transform",
       "translate("+ 0 + "," + 0 + ")");  
 // loadData("allresponses.csv", .1)
-loadData("100tweetspull.csv", .1)
+loadData("neuro.csv", .1)
 function loadData(csvName, filterNum){
 citeNums.length = 0;
 keywords.length = 0;
@@ -190,7 +192,7 @@ var keywordSorted = false;
 
 
 
-var common = 'http,the, I,in,t,co,and,im,rt,shit,bitch,bitches, s, from,those,that, it, is, we, all, a, an, by, to, you, me, he, she, they, we, it, i, are, to, for, of';
+var common = 'this,http,the, I,in,t,co,and,im,rt,shit,bitch,bitches, s, from,those,that, it, is, we, all, a, an, by, to, you, me, he, she, they, we, it, i, are, to, for, of';
 function getUncommon(sentence, common) {
     var wordArr = sentence.match(/\w+/g),
         commonObj = {},
@@ -293,15 +295,18 @@ for (i = 0; i<uniqueMostKeyed.length; i++){
     uniqueKDone=true;   
 }
 // uniqueMostKeyed
-// var colorSpectrum = colorbrewer.PuBu[uniqueMostKeyed.length];
-colorSpectrum =[
-"#9ecae1"
-,"#6baed6"
-,"#4292c6"
-,"#2171b5"
-,"#08519c"
-,"#08306b"
-]
+// colorSpectrum = colorbrewer.Spectral[5];
+
+// colorSpectrum = colorbrewer.YlGnBu[7];
+colorSpectrum = colorbrewer.PuBu[9];
+// colorSpectrum =[
+// "#9ecae1"
+// ,"#6baed6"
+// ,"#4292c6"
+// ,"#2171b5"
+// ,"#08519c"
+// ,"#08306b"
+// ]
 // colorSpectrum = [
 // "#fc5988" 
 // ,"#8675ee"
@@ -313,7 +318,7 @@ color = d3.scale.ordinal()
     .domain([0, uniqueMostKeyed.length])
     .range(colorSpectrum);
     console.log(uniqueMostKeyed.length)
-if(uncommonArr.length>3000){
+if(uncommonArr.length>0){
     console.log("yes")
 callOthers();    
 }
@@ -378,14 +383,19 @@ $("body").keypress(function(){
     // pushDown(secLoad);
             loadTime = 1000;
         loadTwo();
-        // firstPrep = false;
-        // secondPrep = true;
-        //   clearInterval(firstLoadVar); //and stop loading stuff in
-        // returnNodes();   
-        // simpleNodes();
-        // b=0;
+ 
         // $("#titlename").toggle();  //show    
 
+    }
+    if(b==5){
+       firstPrep = false;
+        secondPrep = true;          
+        // clearInterval(secLoadVar); //and stop loading stuff in
+
+          // clearInterval(firstLoadVar); //and stop loading stuff in
+        returnNodes();   
+        // simpleNodes();
+        b=0;        
     }
 });
 })
@@ -451,6 +461,9 @@ var theseHeadlines = [];
 // nodesLength = d3.selectAll(circle[0]).size()
 // jump = (Math.PI*2)/links.length; 
 var chunks = [];
+var specialWord = [];
+var thisTweet = [];
+
 function simpleNodes(){
 console.log(links.length);
    
@@ -571,7 +584,21 @@ text = vis.selectAll("labels")
     .attr("opacity",1)
     .text(function(d,i) {
         return d.split;
-    })
+    });
+if(secondPrep){
+    for(i=0; i<links.length; i++){
+        d3.selectAll(".labels"+i)
+        .transition()
+        .text(function(d,i){
+            return specialWord[i];
+        })
+    }
+}
+   prepText = vis.selectAll("labels")
+            .data(force.nodes())
+            .enter().append("text")
+                    .attr("class",function(d,i){ 
+                       return "labelsP"+i; })
 
 // Use elliptical arc path segments to doubly-encode directionality.
 function tick() {
@@ -648,26 +675,27 @@ linkArc = function(d) {
 //     });
 
 var textSpecial;
-
 concordNodes = function(){
 var chunks1=[];
 var chunks2 = [];
-var specialWord = [];
     console.log("concordNodes")
  
+        // for(var i=0; i<links.length; i++) {
+        //         for (k=0; k<uncommonArr.length; k++){
+        //             for(j=0; j<links[i].split.length; j++){
+        //                 if(links[i].split[j]==uncommonArr[k] && links[i].split.length>1){
+        //                     specialWord[i]= (uncommonArr[k]);
+        //                 }
+        //             }
+        //         }
+        //         }
         for(var i=0; i<tweets.length; i++) {
-                // for (k=0; k<uncommonArr.length; k++){
-                //     for(j=0; j<links[i].split.length; j++){
-                //         if(links[i].split[j]==uncommonArr[k] && links[i].split.length>1){
-                //             specialWord[i]= (uncommonArr[k]);
-                //         }
-                //     }
-                // }            
+            
         if(typeof(tweets[i]) == 'undefined')
             return;
 
             if(tweets[i].length>0){
-            // var tweet = tweets[i];
+            thisTweet[i] = tweets[i].split(" ");
             chunks[i] = tweets[i].split(term);
             chunks1.push(lastNChars(50, chunks[i][0]));
             chunks2.push(firstNChars(50, chunks[i][1]));
@@ -681,7 +709,7 @@ for(i=0; i<links.length; i++){
        .transition()
        .duration(2000)
        .attr("opacity",1)
-        .text("brain")
+        .text("Brain")
         .attr("text-anchor","middle")
         .attr("transform", transAgain)
         .each("end", function(){
@@ -718,23 +746,31 @@ for(i=0; i<links.length; i++){
                 return i*40;
             })
             .attr("text-anchor","middle")
-            .attr("font-size","18px")
+            .attr("font-size","14px")
             .attr("opacity",0)
-            .attr("fill",function(d,i){
-
-                for (k=0; k<uniqueKeywords.length; k++){
-                    for(j=0; j<links[i].split.length; j++){
-                        if(links[i].split[j]==uniqueKeywords[k] && links[i].split.length>1){
-                            return color(k);
-                        }
-                    }
+            // .attr("fill",function(d,i){
+            //     for (k=0; k<uniqueKeywords.length; k++){
+            //         for(j=0; j<tweets[i].split.length; j++){
+            //             if(tweets[i].split[j]==uniqueKeywords[k] && tweets[i].split.length>1){
+            //                 return color(k);
+            //             }
+            //         }
+            //     }
+            // })
+    .attr("fill",function(d,i){  
+        for (k=0; k<uniqueKeywords.length; k++){
+            for(j=0; j<thisTweet[i].length; j++){
+                if(thisTweet[i][j]==uniqueKeywords[k]){
+                    return color(k);
                 }
-            })
+            }
+        }
+    })
             .transition()
             .delay(1900)
             .duration(500)
             .attr("opacity",1)
-            .text("brain")
+            .text("Brain")
 console.log(specialWord)
            textOne = vis.selectAll("label")
             .data(chunks)
@@ -752,8 +788,17 @@ console.log(specialWord)
                 return i*40;
             })
             .attr("text-anchor","end")
-            .attr("font-size","12px")
+            .attr("font-size","14px")
             .attr("opacity",1)
+    .attr("fill",function(d,i){  
+        for (k=0; k<uniqueKeywords.length; k++){
+            for(j=0; j<thisTweet[i].length; j++){
+                if(thisTweet[i][j]==uniqueKeywords[k]){
+                    return color(k);
+                }
+            }
+        }
+    })
             .text(function(d,i){
                 if(d[0]!=null){
                 return d[0];
@@ -783,7 +828,7 @@ console.log(specialWord)
             .data(chunks)
             .enter().append("text")
             .attr("class",function(d,i){ 
-                return "suffix"+i
+                return "suffix"+i;
             })
             .attr("text-anchor","start")
             .attr("x",function(d,i){
@@ -793,8 +838,17 @@ console.log(specialWord)
                 return i*40;
 
             })
-            .attr("opacity",1)
-            .attr("font-size","12px")
+    .attr("fill",function(d,i){  
+        for (k=0; k<uniqueKeywords.length; k++){
+            for(j=0; j<thisTweet[i].length; j++){
+                if(thisTweet[i][j]==uniqueKeywords[k]){
+                    return color(k);
+                }
+            }
+        }
+    })
+                .attr("opacity",1)
+            .attr("font-size","14px")
             .text(function(d,i){
              if(d[1]!=null){
                 return d[1];
@@ -829,7 +883,7 @@ textSpecial = vis.selectAll("label")
                 return i*40;
             })
             .attr("text-anchor","middle")
-            .attr("font-size","18px")
+            .attr("font-size","14px")
             .attr("opacity",0)
             .attr("fill",function(d,i){
                 for (k=0; k<uniqueKeywords.length; k++){
@@ -862,7 +916,7 @@ loadTwo = function(){
     secLoadVar = setInterval(function(){ 
     console.log("in here")
     // if (firstLoad<=links.length){
-    // if (secLoad<=chunks.length){
+    // if (secLoad<=tweets.length){
     // if (chunks.length*40/h>secLoad){
         if(secLoad<=17){
         console.log(secLoad)
@@ -881,7 +935,9 @@ loadTwo = function(){
         }
     },loadTime*3)
 } 
-
+ var fontMap = d3.scale.linear()
+  .domain([0,17])
+  .range([12, 24])
 function pushDown(secLoad){
     // console.log(secLoad)
  // var y = d3.scale.linear()
@@ -889,20 +945,32 @@ function pushDown(secLoad){
  //    .range([0, h]);
 
  // for (i=0; i<secLoad; i++){
+ // for (j=0; j<secLoad; j++){
  for (j=0; j<secLoad*40; j++){
         d3.selectAll(".suffix"+j).attr("transform",null)
         .transition()
-          .duration(loadTime/3)
+          .duration(loadTime/2)
           .ease("linear")
           .attr("transform", function(d,i){
-                return "translate(0," + (-h*secLoad) + ")"
+                d.y = -h*secLoad;
+                // console.log(d3.select(this).y)
+                return "translate(0," + d.y + ")";
+                // return "translate(0," + (-28) + ")"
         })
+        // d3.selectAll(".suffix"+secLoad)
+        // .transition()
+        // .attr("font-size",fontMap(secLoad)+"pt");
 
         d3.selectAll(".prefix"+j).attr("transform",null)
         .transition()
-          .duration(loadTime/3)
+          .duration(loadTime/2)
           .ease("linear")
+         // .attr("font-size", function(d,i){
+         //    var heightNow = d3.select(this).y
+         //      return fontMap(heightNow)+"pt";
+         //  })
           .attr("transform", function(d,i){
+                    // return "translate(0," + (-28) + ")"
                 return "translate(0," + (-h*secLoad) + ")"
         })
 
@@ -911,9 +979,9 @@ function pushDown(secLoad){
 
       d3.selectAll(".brain"+j)
        .transition()
-       .duration(loadTime/3)
+       .duration(loadTime/5)
         .ease("linear")
-       // .attr("x",Math.random()*2)
+       .attr("x",w/2)
           .attr("transform", function(d,i){
                 return "translate(0," + (-h*secLoad) + ")"
         })
@@ -1122,7 +1190,7 @@ function transThru(d) {
 function transNew(d) {
   var map = d3.scale.linear()
   .domain([0,60])
-  .range([w,0])
+  .range([w,50])
     d.x=map(s)+firstLoad;
     d.y =Math.max(radius, Math.min(h - radius, d.y));      
       return "translate(" + d.x+ "," + d.y + ")";
@@ -1159,12 +1227,25 @@ for(i=0; i<majorNodes.length; i++){
             d3.selectAll(".labels"+firstLoad)
             .transition()
             .duration(loadTime).attr("transform", transOne);
+
+            d3.selectAll(".labelsP"+firstLoad)
+            .transition()
+            .duration(loadTime).attr("transform", transOne);
+
             var onebefore = firstLoad-20;
             if(onebefore>=0){
             d3.selectAll(".labels"+onebefore)
             .transition()
             .duration(loadTime).attr("opacity",.1);
+
+            d3.selectAll(".labelsP"+onebefore)
+            .transition()
+            .duration(loadTime).attr("opacity",.1);
             }
+   
+
+
+
 
             d3.selectAll(".link"+firstLoad)
             .transition()
@@ -1288,35 +1369,87 @@ function firstNChars(n, str) {
 
 
 
-
-
-
-
-
-
 returnNodes = function(){
+
     console.log("return nodes")
-                d3.selectAll(".suffix")
-                    .transition()
-                    .duration(2000)
-                    .attr("opacity", .1) 
-                d3.selectAll(".prefix")
-                    .transition()
-                    .duration(2000)
-                    .attr("opacity", .1) 
-   force.start();
-   text
+// if(secondPrep){
+    // force.stop();
+// var kforce = d3.layout.force()
+//     .nodes(d3.values(nodes))
+//     .links(links)
+//     .size([w, h])
+//     .linkDistance(40)
+//     .charge(-200)
+//     .on("tick",ktick)
+//     .start(); 
+for(i=0; i<links.length; i++){
+   d3.selectAll(".labels"+i)
    .transition()
-   .duration(1000)
+   .duration(2000)
     .text(function(d,i) {
-        return d.headline;
-    }) 
+        for(j=0; j<uniqueMostKeyed.length; j++){
+            if(d.name==uniqueMostKeyed[j]){
+                return d.name;
+            }
+        }
+        for(k=0; k<majorNodes.length; k++){
+            if(i!=k){
+                //make this only if d.headline matches an action word
+                // for()
+                for(z=0; z<uncommonArr.length; z++){
+                if (d.split.indexOf(uncommonArr[z])!=-1){
+
+                    // if(indexOf(d.headline.split(" "))==uncommonArr[z]){
+                        return uncommonArr[z];
+                    }           
+                }
+            }
+        }
+    })
     .transition()
     .duration(2000)
     .each("end", function(){
         force.start();
-    })   
+    })
+}  
 }
+
+
+
+
+
+
+
+// returnNodes = function(){
+//     console.log("return nodes")
+//     for (i=0; i<chunks.length; i++){
+//                   d3.selectAll(".suffix"+i)
+//                     .transition()
+//                     .duration(2000)
+//                     .attr("opacity", .1) 
+//                 d3.selectAll(".prefix"+i)
+//                     .transition()
+//                     .duration(2000)
+//                     .attr("opacity", .1)       
+//                 d3.selectAll(".brain"+i)
+//                     .transition()
+//                     .duration(2000)
+//                     .attr("opacity", .1)      
+//     }
+
+//    force.start();
+//    text
+//    .transition()
+//    .duration(1000)
+//     .text(function(d,i) {
+//         return specialWord[i];
+//     }) 
+//     .transition()
+//     .duration(2000)
+//     .each("end", function(){
+//         force.start();
+//     })   
+// }
 stopMove = function(){
 force.stop();
   circle

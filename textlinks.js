@@ -114,9 +114,9 @@ var startAngle = 0;
 var angleVel = 0.23;
 
 var linkArc;
-
+    // var term = "neuron";
     var term = "neuroscience";
-    var term2 = "brain"
+    // var term2 = "brain"
 
 var prepText;
 
@@ -150,7 +150,9 @@ svg = d3.select("#container")
     .attr("transform",
       "translate("+ 0 + "," + 0 + ")");  
 // loadData("allresponses.csv", .1)
-loadData("1000brainTweetsArchiver.csv", .1)
+// loadData("1000brainTweetsArchiver.csv", .1)
+loadData("2088archiver.csv", .1)
+// loadData("1849neuron.csv",.1)
 function loadData(csvName, filterNum){
 citeNums.length = 0;
 keywords.length = 0;
@@ -289,11 +291,15 @@ if(keywordSorted==true){
 //     } //creates a new aray with the sums of all the different Names
 // }
 // uniqueMostKeyed = uncommonArr.filter( onlyUnique ); //finds unique authors
-uniqueMostKeyed = focusKeywords.filter( onlyUnique ); //finds unique authors
+// uniqueMostKeyed = focusKeywords.filter( onlyUnique ); //finds unique authors
+uniqueMostKeyed = ["brain","Doctor","special","lord",
+"neuroscience","golden","age","via","membuat","autism","science","synapses","children","extra","area","research","exercise","dean","burnett","motivation","responsible","arrived","discovered","human","psychology"]
+// uniqueMostKeyed = ["motor","disease","otak","utk","ALS","ice","icebucketchallenge","challenge","bucket","selama","awareness"]
 for (i = 0; i<uniqueMostKeyed.length; i++){
    totalK[i]= keyConsolidation(uniqueMostKeyed[i])
     uniqueKDone=true;   
 }
+
 // uniqueMostKeyed
 // colorSpectrum = colorbrewer.Spectral[5];
 // colorSpectrum = colorbrewer.BuGn[9];
@@ -707,16 +713,16 @@ var chunks2 = [];
             
         if(typeof(tweets[i]) == 'undefined')
             return;
-
+//length can be 80 if using 14pt
             if(tweets[i].length>0){
             thisTweet[i] = tweets[i].split(" ");
             // if(tweets[i].split(term).length*)
             chunks[i] = tweets[i].split(term);
-            if(chunks[i][0]!=null&&chunks[i][0].length<=80&&chunks[i][1]!=null&&chunks[i][1].length<=80){
-               chunks1.push(lastNChars(80, chunks[i][0]));             
+            if(chunks[i][0]!=null&&chunks[i][0].length<=70&&chunks[i][1]!=null&&chunks[i][1].length<=70){
+               chunks1.push(lastNChars(70, chunks[i][0]));             
             // }
             // if(chunks[i][1]!=null&&chunks[i][1].length<=80){
-               chunks2.push(firstNChars(80, chunks[i][1]));             
+               chunks2.push(firstNChars(70, chunks[i][1]));             
             } else{}
                 // if(d[0]!=null &&d[0].length<=80){
             // if(lastNChars(50,chunks[i][0])!=null&&lastNChars(50,chunks[i][0]).length<=90){
@@ -783,7 +789,7 @@ for(i=0; i<links.length; i++){
                 return i*40;
             })
             .attr("text-anchor","middle")
-            .attr("font-size","14px")
+            .attr("font-size","18px")
             .attr("opacity",0)
             // .attr("fill",function(d,i){
             //     for (k=0; k<uniqueKeywords.length; k++){
@@ -828,7 +834,7 @@ console.log(specialWord)
                 return i*40;
             })
             .attr("text-anchor","end")
-            .attr("font-size","14px")
+            .attr("font-size","18px")
             .attr("opacity",1)
     .attr("fill",function(d,i){  
         for (k=0; k<uniqueKeywords.length; k++){
@@ -892,7 +898,7 @@ console.log(specialWord)
         return "white";
     })
                 .attr("opacity",1)
-            .attr("font-size","14px")
+            .attr("font-size","18px")
             .text(function(d,i){
                 return d;
              // if(d[1]!=null && d[1].length<=80){
@@ -918,34 +924,34 @@ var fisheye = d3.fisheye.circular()
                   // var specialY = d3.scale.linear()
                   //   .domain([0, specialWord.length])
                   //   .range([0, h]); 
-textSpecial = vis.selectAll("label")
-            .data(specialWord)
-            .enter().append("text")
-            .attr("class",function(d,i){ 
-               return "special"+i; })
-            .attr("x", w/2)           
-            .attr("y", function(d,i){
-                return i*40;
-            })
-            .attr("text-anchor","middle")
-            .attr("font-size","14px")
-            .attr("opacity",0)
-            .attr("fill",function(d,i){
-                for (k=0; k<uniqueKeywords.length; k++){
-                    for(j=0; j<links[i].split.length; j++){
-                        if(links[i].split[j]==uniqueKeywords[k] && links[i].split.length>1){
-                            return color(k);
-                        }
-                    }
-                }
-            })
-            .transition()
-            .delay(2300)
-            .duration(1000)
-            .text(function(d,i){
-                return d;
-            })
-                .attr("opacity",0)
+// textSpecial = vis.selectAll("label")
+//             .data(specialWord)
+//             .enter().append("text")
+//             .attr("class",function(d,i){ 
+//                return "special"+i; })
+//             .attr("x", w/2)           
+//             .attr("y", function(d,i){
+//                 return i*40;
+//             })
+//             .attr("text-anchor","middle")
+//             .attr("font-size","14px")
+//             .attr("opacity",0)
+//             .attr("fill",function(d,i){
+//                 for (k=0; k<uniqueKeywords.length; k++){
+//                     for(j=0; j<links[i].split.length; j++){
+//                         if(links[i].split[j]==uniqueKeywords[k] && links[i].split.length>1){
+//                             return color(k);
+//                         }
+//                     }
+//                 }
+//             })
+//             .transition()
+//             .delay(2300)
+//             .duration(1000)
+//             .text(function(d,i){
+//                 return d;
+//             })
+//                 .attr("opacity",0)
 
 
                 // .attr("x", function(d,i){                  
@@ -1465,6 +1471,15 @@ for(i=0; i<links.length; i++){
             }
         }
     })
+    // .attr("font-size", function(d,i){
+    //         for(k=0; k<majorNodes.length; k++){
+    //             if(i==k){ 
+    //                 return "24pt";
+    //             }else{
+    //                 return "14pt";
+    //             }
+    //         }
+    // })
     .transition()
     .duration(2000)
     .attr("opacity",1)

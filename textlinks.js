@@ -296,8 +296,9 @@ for (i = 0; i<uniqueMostKeyed.length; i++){
 }
 // uniqueMostKeyed
 // colorSpectrum = colorbrewer.Spectral[5];
+// colorSpectrum = colorbrewer.BuGn[9];
 
-// colorSpectrum = colorbrewer.YlGnBu[7];
+// colorSpectrum = colorbrewer.YlGnBu[9];
 colorSpectrum = colorbrewer.PuBu[9];
 // colorSpectrum =[
 // "#9ecae1"
@@ -390,7 +391,19 @@ $("body").keypress(function(){
     if(b==5){
        firstPrep = false;
         secondPrep = true;          
-        // clearInterval(secLoadVar); //and stop loading stuff in
+        clearInterval(secLoadVar); //and stop loading stuff in
+clearInterval(firstLoadVar);
+
+          // clearInterval(firstLoadVar); //and stop loading stuff in
+        returnNodes();   
+        // simpleNodes();
+        b=0;        
+    }
+    if(b==5){
+       firstPrep = false;
+        secondPrep = true;          
+        clearInterval(secLoadVar); //and stop loading stuff in
+clearInterval(firstLoadVar);
 
           // clearInterval(firstLoadVar); //and stop loading stuff in
         returnNodes();   
@@ -580,6 +593,7 @@ text = vis.selectAll("labels")
                 }
             }
         }
+                return "white";
     })
     .attr("opacity",1)
     .text(function(d,i) {
@@ -698,12 +712,12 @@ var chunks2 = [];
             thisTweet[i] = tweets[i].split(" ");
             // if(tweets[i].split(term).length*)
             chunks[i] = tweets[i].split(term);
-            if(chunks[i][0]!=null&&chunks[i][0].length<=80){
-               chunks1.push(lastNChars(50, chunks[i][0]));             
-            }
-            if(chunks[i][1]!=null&&chunks[i][1].length<=80){
-               chunks2.push(lastNChars(50, chunks[i][1]));             
-            }
+            if(chunks[i][0]!=null&&chunks[i][0].length<=80&&chunks[i][1]!=null&&chunks[i][1].length<=80){
+               chunks1.push(lastNChars(80, chunks[i][0]));             
+            // }
+            // if(chunks[i][1]!=null&&chunks[i][1].length<=80){
+               chunks2.push(firstNChars(80, chunks[i][1]));             
+            } else{}
                 // if(d[0]!=null &&d[0].length<=80){
             // if(lastNChars(50,chunks[i][0])!=null&&lastNChars(50,chunks[i][0]).length<=90){
             // chunks1.push(lastNChars(50, chunks[i][0]));
@@ -732,7 +746,7 @@ for(i=0; i<links.length; i++){
        .transition()
        .duration(2000)
        .attr("opacity",1)
-        .text(term)
+        // .text(term)
         .attr("text-anchor","middle")
         .attr("transform", transAgain)
         .each("end", function(){
@@ -786,6 +800,9 @@ for(i=0; i<links.length; i++){
                 if(thisTweet[i][j]==uniqueKeywords[k]){
                     return color(k);
                 }
+                else{
+                    return "white";
+                }
             }
         }
     })
@@ -821,7 +838,9 @@ console.log(specialWord)
                 }
             }
         }
+        return "white";
     })
+
             .text(function(d,i){
                 return d;
                 // if(d[0]!=null &&d[0].length<=80){
@@ -849,10 +868,9 @@ console.log(specialWord)
 
 
             var textTwo = vis.selectAll("label")
-            .data(chunks)
+            .data(chunks2)
             .enter().append("text")
             .attr("class",function(d,i){ 
-
                 return "suffix"+i;
             })
             .attr("text-anchor","start")
@@ -871,13 +889,15 @@ console.log(specialWord)
                 }
             }
         }
+        return "white";
     })
                 .attr("opacity",1)
             .attr("font-size","14px")
             .text(function(d,i){
-             if(d[1]!=null && d[1].length<=80){
-                return d[1];
-                }else{ return " "}
+                return d;
+             // if(d[1]!=null && d[1].length<=80){
+             //    return d[1];
+             //    }else{ return " "}
             })
 
 
@@ -943,7 +963,7 @@ loadTwo = function(){
     // if (firstLoad<=links.length){
     // if (secLoad<=tweets.length){
     // if (chunks.length*40/h>secLoad){
-        if(secLoad<=17){
+        if(secLoad<=100){
         console.log(secLoad)
         // for(i=0; i<majorNodes.length; i++){
         //     if (secLoad==majorNodes[i]){
@@ -972,16 +992,7 @@ function pushDown(secLoad){
  // for (i=0; i<secLoad; i++){
  // for (j=0; j<secLoad; j++){
  for (j=0; j<secLoad*40; j++){
-        d3.selectAll(".suffix"+j).attr("transform",null)
-        .transition()
-          .duration(loadTime/2)
-          .ease("linear")
-          .attr("transform", function(d,i){
-                d.y = -h*secLoad;
-                // console.log(d3.select(this).y)
-                return "translate(0," + d.y + ")";
-                // return "translate(0," + (-28) + ")"
-        })
+
         // d3.selectAll(".suffix"+secLoad)
         // .transition()
         // .attr("font-size",fontMap(secLoad)+"pt");
@@ -999,7 +1010,16 @@ function pushDown(secLoad){
                 return "translate(0," + (-h*secLoad) + ")"
         })
 
-
+        d3.selectAll(".suffix"+j).attr("transform",null)
+        .transition()
+          .duration(loadTime/2)
+          .ease("linear")
+          .attr("transform", function(d,i){
+                // d.y = -h*secLoad;
+                // console.log(d3.select(this).y)
+                return "translate(0," + (-h*secLoad) + ")"
+                // return "translate(0," + (-28) + ")"
+        })
 
 
       d3.selectAll(".brain"+j)
@@ -1411,15 +1431,15 @@ returnNodes = function(){
                   d3.selectAll(".suffix"+i)
                     .transition()
                     .duration(2000)
-                    .attr("opacity", .1) 
+                    .attr("opacity", 0) 
                 d3.selectAll(".prefix"+i)
                     .transition()
                     .duration(2000)
-                    .attr("opacity", .1)       
+                    .attr("opacity", 0)       
                 d3.selectAll(".brain"+i)
                     .transition()
                     .duration(2000)
-                    .attr("opacity", .1)      
+                    .attr("opacity", 0)      
     }
 for(i=0; i<links.length; i++){
    d3.selectAll(".labels"+i)
@@ -1447,6 +1467,7 @@ for(i=0; i<links.length; i++){
     })
     .transition()
     .duration(2000)
+    .attr("opacity",1)
     .each("end", function(){
         force.start();
     })

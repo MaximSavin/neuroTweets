@@ -68,7 +68,7 @@ var radius = 3;
 var width = window.outerWidth;
 var height = window.innerHeight-50;
 var w = 1400; //window.outerWidth-50;
-var h = 720; //window.innerHeight-50;
+var h = 744; //window.innerHeight-50;
 
 var newCircle;
 

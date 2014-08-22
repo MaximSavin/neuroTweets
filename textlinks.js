@@ -171,7 +171,8 @@ thisData=(data);
 for (i = 0;i<thisData.length; i++){ 
 
     if (thisData[i].BrainTweets!="undefined"){
-        tweets[i] = thisData[i].BrainTweets;
+        // var test = 
+        tweets[i] = thisData[i].BrainTweets.replace(/&#?[a-z0-9]+;/gi,"");
         keywords[i] = thisData[i].BrainTweets.split(" ");
         // keywords[i].push(unkeywords.toLowerCase());
         }

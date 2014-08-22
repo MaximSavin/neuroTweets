@@ -67,8 +67,8 @@ var radius = 3;
     //Width and height
 var width = window.outerWidth;
 var height = window.innerHeight-50;
-var w = window.outerWidth-50;
-var h = window.innerHeight-50;
+var w = 1400; //window.outerWidth-50;
+var h = 720; //window.innerHeight-50;
 
 var newCircle;
 
@@ -351,23 +351,21 @@ $( document ).ready(function() {
 
         // $("#titlename").toggle();  //show   
 $("body").keypress(function(){
-
-
     (b+=1);
+    // if (b==1){
+    //     // force.stop();
+    //     // randomOne = true;
+    //     // if(randomOne){
+    //     //     loadTime = 1;//500;
+    //     // }
+    //     // force.stop();
+    //     // randomOne = true;
+    //     // if(randomOne){
+    //     //     loadTime = 1;//500;
+    //     // }
+    //     // loadOne();
+    // }            
     if (b==1){
-        // force.stop();
-        // randomOne = true;
-        // if(randomOne){
-        //     loadTime = 1;//500;
-        // }
-        // force.stop();
-        // randomOne = true;
-        // if(randomOne){
-        //     loadTime = 1;//500;
-        // }
-        // loadOne();
-    }            
-    if (b==2){
         force.stop();
         randomOne = true;
         randomTwo = false;
@@ -383,23 +381,23 @@ $("body").keypress(function(){
         }
         loadOne();
     }
-    if (b==3){   
+    if (b==2){   
           clearInterval(firstLoadVar); //and stop loading stuff in
-       concordNodes();
+       concordNodes(); //setting up view
    }
-   if(b==4){
+   if(b==3){
     // pushDown(secLoad);
-            loadTime = 1000;
-        loadTwo();
+        loadTime = 8000;
+        loadTwo(); //scrolling headlines
  
         // $("#titlename").toggle();  //show    
 
     }
-    if(b==5){
+    if(b==4){
        firstPrep = false;
         secondPrep = true;          
         clearInterval(secLoadVar); //and stop loading stuff in
-clearInterval(firstLoadVar);
+        clearInterval(firstLoadVar);
 
           // clearInterval(firstLoadVar); //and stop loading stuff in
         returnNodes();   
@@ -407,14 +405,7 @@ clearInterval(firstLoadVar);
         b=0;        
     }
     if(b==5){
-       firstPrep = false;
-        secondPrep = true;          
-        clearInterval(secLoadVar); //and stop loading stuff in
-clearInterval(firstLoadVar);
-
-          // clearInterval(firstLoadVar); //and stop loading stuff in
-        returnNodes();   
-        // simpleNodes();
+        // force.();
         b=0;        
     }
 });
@@ -700,50 +691,23 @@ concordNodes = function(){
 var chunks1=[];
 var chunks2 = [];
     console.log("concordNodes")
- 
-        // for(var i=0; i<links.length; i++) {
-        //         for (k=0; k<uncommonArr.length; k++){
-        //             for(j=0; j<links[i].split.length; j++){
-        //                 if(links[i].split[j]==uncommonArr[k] && links[i].split.length>1){
-        //                     specialWord[i]= (uncommonArr[k]);
-        //                 }
-        //             }
-        //         }
-        //         }
+
         for(var i=0; i<tweets.length; i++) {
             
         if(typeof(tweets[i]) == 'undefined')
             return;
 //length can be 80 if using 14pt
+//
             if(tweets[i].length>0){
             thisTweet[i] = tweets[i].split(" ");
-            // if(tweets[i].split(term).length*)
             chunks[i] = tweets[i].split(term);
             if(chunks[i][0]!=null&&chunks[i][0].length<=70&&chunks[i][1]!=null&&chunks[i][1].length<=70){
                chunks1.push(lastNChars(70, chunks[i][0]));             
-            // }
-            // if(chunks[i][1]!=null&&chunks[i][1].length<=80){
                chunks2.push(firstNChars(70, chunks[i][1]));             
             } else{}
-                // if(d[0]!=null &&d[0].length<=80){
-            // if(lastNChars(50,chunks[i][0])!=null&&lastNChars(50,chunks[i][0]).length<=90){
-            // chunks1.push(lastNChars(50, chunks[i][0]));
-            // }else{}
-            // if(firstNChars(50,chunks[i][0])!=null&&lastNChars(50,chunks[i][0]).length<=90){
-            // chunks2.push(lastNChars(50, chunks[i][1]));
-            // }else{}
-
-            // chunks1.push(lastNChars(50, chunks[i][0]));
-            // chunks2.push(firstNChars(50, chunks[i][1]));
         }
     }
     console.log(chunks2.length)
-    // for (i=0; i<chunks.length; i++){
-    //     if(chunks[i][0].length!=null&&chunks[i][0].length>=90&&chunks[i][0].length!=null&&chunks[i][0].length>=90){
-    //         chunks[i][0]= chunks[i][0];
-    //         chunks[i][1] = chunks[i][1];
-    //     }
-    // }
     console.log(chunks1.length)
 
 for(i=0; i<links.length; i++){
@@ -779,7 +743,7 @@ for(i=0; i<links.length; i++){
       return "translate(" + d.x+ "," + d.y + ")";
     }
 }
-
+        // THIS IS THE LIVE FUNCTION
         var textBrain = vis.selectAll("label")
             .data(chunks1)
             .enter().append("text")
@@ -792,33 +756,25 @@ for(i=0; i<links.length; i++){
             .attr("text-anchor","middle")
             .attr("font-size","18px")
             .attr("opacity",0)
-            // .attr("fill",function(d,i){
-            //     for (k=0; k<uniqueKeywords.length; k++){
-            //         for(j=0; j<tweets[i].split.length; j++){
-            //             if(tweets[i].split[j]==uniqueKeywords[k] && tweets[i].split.length>1){
-            //                 return color(k);
-            //             }
-            //         }
-            //     }
-            // })
-    .attr("fill",function(d,i){  
-        for (k=0; k<uniqueKeywords.length; k++){
-            for(j=0; j<thisTweet[i].length; j++){
-                if(thisTweet[i][j]==uniqueKeywords[k]){
-                    return color(k);
+            .attr("fill",function(d,i){  
+                for (k=0; k<uniqueKeywords.length; k++){
+                    for(j=0; j<thisTweet[i].length; j++){
+                        if(thisTweet[i][j]==uniqueKeywords[k]){
+                            return color(k);
+                        }
+                        else{
+                            return "white";
+                        }
+                    }
                 }
-                else{
-                    return "white";
-                }
-            }
-        }
-    })
+            })
             .transition()
             .delay(1900)
             .duration(500)
             .attr("opacity",1)
             .text(term)
-console.log(specialWord)
+
+// console.log(specialWord)
            textOne = vis.selectAll("label")
             .data(chunks1)
             .enter().append("text")
@@ -837,42 +793,19 @@ console.log(specialWord)
             .attr("text-anchor","end")
             .attr("font-size","18px")
             .attr("opacity",1)
-    .attr("fill",function(d,i){  
-        for (k=0; k<uniqueKeywords.length; k++){
-            for(j=0; j<thisTweet[i].length; j++){
-                if(thisTweet[i][j]==uniqueKeywords[k]){
-                    return color(k);
+            .attr("fill",function(d,i){  
+                for (k=0; k<uniqueKeywords.length; k++){
+                    for(j=0; j<thisTweet[i].length; j++){
+                        if(thisTweet[i][j]==uniqueKeywords[k]){
+                            return color(k);
+                        }
+                    }
                 }
-            }
-        }
-        return "white";
-    })
-
+                return "white";
+            })
             .text(function(d,i){
                 return d;
-                // if(d[0]!=null &&d[0].length<=80){
-                // return d[0];
-                // }else{ return " "}
             })     
-
-
-// var i = 0;
-// data.forEach(function(d,row) {
-//     d.split("").forEach(function(d,column) {
-//         transition(row,column);
-//     });
-// });
-
-// function transition(row,column) {
-//    d3.select('text').datum(data[row].split("").slice(0,column+1))
-//     .transition()
-//     .delay(function(d) { return (row*5000) + (column*50); } )
-//     .text(function(d){return d.join("");});
-// }
-
-
-
-
 
             var textTwo = vis.selectAll("label")
             .data(chunks2)
@@ -888,23 +821,20 @@ console.log(specialWord)
                 return i*40;
 
             })
-    .attr("fill",function(d,i){  
-        for (k=0; k<uniqueKeywords.length; k++){
-            for(j=0; j<thisTweet[i].length; j++){
-                if(thisTweet[i][j]==uniqueKeywords[k]){
-                    return color(k);
+            .attr("fill",function(d,i){  
+                for (k=0; k<uniqueKeywords.length; k++){
+                    for(j=0; j<thisTweet[i].length; j++){
+                        if(thisTweet[i][j]==uniqueKeywords[k]){
+                            return color(k);
+                        }
+                    }
                 }
-            }
-        }
-        return "white";
-    })
-                .attr("opacity",1)
+                return "white";
+            })
+            .attr("opacity",1)
             .attr("font-size","18px")
             .text(function(d,i){
                 return d;
-             // if(d[1]!=null && d[1].length<=80){
-             //    return d[1];
-             //    }else{ return " "}
             })
 
 
@@ -913,96 +843,35 @@ console.log(specialWord)
 
 
 
-var fisheye = d3.fisheye.circular()
-      .radius(120);
-      // fisheye.focus([w/2, h/2]);
-
-
-
                   var specialX = d3.scale.linear()
                     .domain([0, specialWord.length])
                     .range([0, w]); 
-                  // var specialY = d3.scale.linear()
-                  //   .domain([0, specialWord.length])
-                  //   .range([0, h]); 
-// textSpecial = vis.selectAll("label")
-//             .data(specialWord)
-//             .enter().append("text")
-//             .attr("class",function(d,i){ 
-//                return "special"+i; })
-//             .attr("x", w/2)           
-//             .attr("y", function(d,i){
-//                 return i*40;
-//             })
-//             .attr("text-anchor","middle")
-//             .attr("font-size","14px")
-//             .attr("opacity",0)
-//             .attr("fill",function(d,i){
-//                 for (k=0; k<uniqueKeywords.length; k++){
-//                     for(j=0; j<links[i].split.length; j++){
-//                         if(links[i].split[j]==uniqueKeywords[k] && links[i].split.length>1){
-//                             return color(k);
-//                         }
-//                     }
-//                 }
-//             })
-//             .transition()
-//             .delay(2300)
-//             .duration(1000)
-//             .text(function(d,i){
-//                 return d;
-//             })
-//                 .attr("opacity",0)
-
-
-                // .attr("x", function(d,i){                  
-                //     return w/2+Math.random()*d.length;
-                // })
-                // .attr("y", function(d,i){                  
-                //     return Math.random()*specialY(i);
-                // })
 }
 
-
+//THIS IS THE FUNCTION FOR SCROLLING CONCORDED VIEW
 loadTwo = function(){
     secLoadVar = setInterval(function(){ 
     console.log("in here")
     // if (firstLoad<=links.length){
     // if (secLoad<=tweets.length){
     // if (chunks.length*40/h>secLoad){
-        if(secLoad<=100){
-        console.log(secLoad)
-        // for(i=0; i<majorNodes.length; i++){
-        //     if (secLoad==majorNodes[i]){
-        //         secLoad++;
-        //     }
-            // else{      
+        if(secLoad<=17){
+        console.log(secLoad)   
                 secLoad = secLoad+1;      
-                // var oneTweet = links[firstLoad];
-                pushDown(secLoad); //store inner subjects is the loading function for the big data      
-            // }
+                pushDown(secLoad); 
         }
         else {
           clearInterval(secLoadVar); //and stop loading stuff in
         }
-    },loadTime*3)
+    },loadTime)
 } 
+
  var fontMap = d3.scale.linear()
   .domain([0,17])
   .range([12, 24])
+
 function pushDown(secLoad){
-    // console.log(secLoad)
- // var y = d3.scale.linear()
- //    .domain([0, chunks.length - 1])
- //    .range([0, h]);
-
- // for (i=0; i<secLoad; i++){
- // for (j=0; j<secLoad; j++){
  for (j=0; j<secLoad*40; j++){
-
-        // d3.selectAll(".suffix"+secLoad)
-        // .transition()
-        // .attr("font-size",fontMap(secLoad)+"pt");
 
         d3.selectAll(".prefix"+j).attr("transform",null)
         .transition()
@@ -1031,7 +900,7 @@ function pushDown(secLoad){
 
       d3.selectAll(".brain"+j)
        .transition()
-       .duration(loadTime/5)
+       .duration(loadTime/10)
         .ease("linear")
        .attr("x",w/2)
           .attr("transform", function(d,i){

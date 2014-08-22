@@ -115,7 +115,7 @@ var angleVel = 0.23;
 
 var linkArc;
 
-    var term = "Brain";
+    var term = "neuroscience";
     var term2 = "brain"
 
 var prepText;
@@ -150,7 +150,7 @@ svg = d3.select("#container")
     .attr("transform",
       "translate("+ 0 + "," + 0 + ")");  
 // loadData("allresponses.csv", .1)
-loadData("neuro.csv", .1)
+loadData("1000brainTweetsArchiver.csv", .1)
 function loadData(csvName, filterNum){
 citeNums.length = 0;
 keywords.length = 0;
@@ -192,7 +192,7 @@ var keywordSorted = false;
 
 
 
-var common = 'this,http,the, I,in,t,co,and,im,rt,shit,bitch,bitches, s, from,those,that, it, is, we, all, a, an, by, to, you, me, he, she, they, we, it, i, are, to, for, of';
+var common = 'this,qlsvbntnyh,http,the, I,in,t,co,and,im,rt,shit,bitch,bitches, s, from,those,that, it, is, we, all, a, an, by, to, you, me, he, she, they, we, it, i, are, to, for, of';
 function getUncommon(sentence, common) {
     var wordArr = sentence.match(/\w+/g),
         commonObj = {},
@@ -696,11 +696,34 @@ var chunks2 = [];
 
             if(tweets[i].length>0){
             thisTweet[i] = tweets[i].split(" ");
+            // if(tweets[i].split(term).length*)
             chunks[i] = tweets[i].split(term);
-            chunks1.push(lastNChars(50, chunks[i][0]));
-            chunks2.push(firstNChars(50, chunks[i][1]));
+            if(chunks[i][0]!=null&&chunks[i][0].length<=80){
+               chunks1.push(lastNChars(50, chunks[i][0]));             
+            }
+            if(chunks[i][1]!=null&&chunks[i][1].length<=80){
+               chunks2.push(lastNChars(50, chunks[i][1]));             
+            }
+                // if(d[0]!=null &&d[0].length<=80){
+            // if(lastNChars(50,chunks[i][0])!=null&&lastNChars(50,chunks[i][0]).length<=90){
+            // chunks1.push(lastNChars(50, chunks[i][0]));
+            // }else{}
+            // if(firstNChars(50,chunks[i][0])!=null&&lastNChars(50,chunks[i][0]).length<=90){
+            // chunks2.push(lastNChars(50, chunks[i][1]));
+            // }else{}
+
+            // chunks1.push(lastNChars(50, chunks[i][0]));
+            // chunks2.push(firstNChars(50, chunks[i][1]));
         }
     }
+    console.log(chunks2.length)
+    // for (i=0; i<chunks.length; i++){
+    //     if(chunks[i][0].length!=null&&chunks[i][0].length>=90&&chunks[i][0].length!=null&&chunks[i][0].length>=90){
+    //         chunks[i][0]= chunks[i][0];
+    //         chunks[i][1] = chunks[i][1];
+    //     }
+    // }
+    console.log(chunks1.length)
 
 for(i=0; i<links.length; i++){
 
@@ -709,7 +732,7 @@ for(i=0; i<links.length; i++){
        .transition()
        .duration(2000)
        .attr("opacity",1)
-        .text("Brain")
+        .text(term)
         .attr("text-anchor","middle")
         .attr("transform", transAgain)
         .each("end", function(){
@@ -737,7 +760,7 @@ for(i=0; i<links.length; i++){
 }
 
         var textBrain = vis.selectAll("label")
-            .data(chunks)
+            .data(chunks1)
             .enter().append("text")
             .attr("class",function(d,i){ 
                return "brain"+i; })
@@ -770,10 +793,10 @@ for(i=0; i<links.length; i++){
             .delay(1900)
             .duration(500)
             .attr("opacity",1)
-            .text("Brain")
+            .text(term)
 console.log(specialWord)
            textOne = vis.selectAll("label")
-            .data(chunks)
+            .data(chunks1)
             .enter().append("text")
             .attr("class",function(d,i){
                 return "prefix"+i; })
@@ -781,7 +804,7 @@ console.log(specialWord)
                 if(d[0]==null){
                     return 0;
                 }else{
-                return w/2-getTextWidth(term)*2;
+                return w/2-getTextWidth(term)*1.3;
                 }
             })
             .attr("y", function(d,i){
@@ -800,9 +823,10 @@ console.log(specialWord)
         }
     })
             .text(function(d,i){
-                if(d[0]!=null){
-                return d[0];
-                }else{ return " "}
+                return d;
+                // if(d[0]!=null &&d[0].length<=80){
+                // return d[0];
+                // }else{ return " "}
             })     
 
 
@@ -828,11 +852,12 @@ console.log(specialWord)
             .data(chunks)
             .enter().append("text")
             .attr("class",function(d,i){ 
+
                 return "suffix"+i;
             })
             .attr("text-anchor","start")
             .attr("x",function(d,i){
-                return w/2+getTextWidth(term)*2; //+getTextWidth(d[1]);//getTextWidth(term)*2; //getTextWidth(d[1])
+                return w/2+getTextWidth(term)*1.3; //+getTextWidth(d[1]);//getTextWidth(term)*2; //getTextWidth(d[1])
             })
             .attr("y", function(d,i){
                 return i*40;
@@ -850,7 +875,7 @@ console.log(specialWord)
                 .attr("opacity",1)
             .attr("font-size","14px")
             .text(function(d,i){
-             if(d[1]!=null){
+             if(d[1]!=null && d[1].length<=80){
                 return d[1];
                 }else{ return " "}
             })
@@ -1382,6 +1407,20 @@ returnNodes = function(){
 //     .charge(-200)
 //     .on("tick",ktick)
 //     .start(); 
+    for (i=0; i<chunks.length; i++){
+                  d3.selectAll(".suffix"+i)
+                    .transition()
+                    .duration(2000)
+                    .attr("opacity", .1) 
+                d3.selectAll(".prefix"+i)
+                    .transition()
+                    .duration(2000)
+                    .attr("opacity", .1)       
+                d3.selectAll(".brain"+i)
+                    .transition()
+                    .duration(2000)
+                    .attr("opacity", .1)      
+    }
 for(i=0; i<links.length; i++){
    d3.selectAll(".labels"+i)
    .transition()

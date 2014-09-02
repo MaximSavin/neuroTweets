@@ -306,7 +306,7 @@ for (i = 0; i<uniqueMostKeyed.length; i++){
 // colorSpectrum = colorbrewer.BuGn[9];
 
 // colorSpectrum = colorbrewer.YlGnBu[9];
-colorSpectrum = colorbrewer.PuBu[9];
+// colorSpectrum = colorbrewer.PuBu[9]; //chosen for first animation
 // colorSpectrum =[
 // "#9ecae1"
 // ,"#6baed6"
@@ -315,12 +315,18 @@ colorSpectrum = colorbrewer.PuBu[9];
 // ,"#08519c"
 // ,"#08306b"
 // ]
+//custom colors
 // colorSpectrum = [
 // "#fc5988" 
 // ,"#8675ee"
 // ,"#fcb752"
 // ,"#89e2fe"
 // ]
+colorSpectrum = [
+"rgb(246,236,49)","rgb(29,230,65)" 
+,"rgb(255,128,188)"
+,"rgb(1,214,212)"
+]
 
 color = d3.scale.ordinal()
     .domain([0, uniqueMostKeyed.length])
@@ -1354,7 +1360,13 @@ for(i=0; i<links.length; i++){
     .duration(2000)
     .attr("opacity",1)
     .each("end", function(){
+        d3.select(this)
+    .transition()
+    .duration(2000)
+    .attr("opacity",1)
+    .each("end",function(){
         force.start();
+    })
     })
 }  
 }

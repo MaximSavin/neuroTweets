@@ -41,7 +41,9 @@ var padX = 100;
 var loadTwo;
 var secLoadVar;
 var secLoad = 0;
-
+var loadThree;
+var thirdLoadVar;
+var tLoad = 0;
 
 var minYear;
 var maxYear;
@@ -148,10 +150,11 @@ svg = d3.select("#container")
  var vis = svg //for the visualization
     .append('svg:g')
     .attr("transform",
-      "translate("+ 0 + "," + 0 + ")");  
+      "translate("+ 0 + "," + 0 + ")");
+loadData("uniqueTweets.csv",.1)  
 // loadData("allresponses.csv", .1)
 // loadData("1000brainTweetsArchiver.csv", .1)
-loadData("2088archiver.csv", .1)
+// loadData("2088archiver.csv", .1)
 // loadData("1849neuron.csv",.1)
 function loadData(csvName, filterNum){
 citeNums.length = 0;
@@ -380,10 +383,10 @@ $("body").keypress(function(){
         clearInterval(firstLoadVar); //and stop loading stuff in
         firstLoad = 0;
         if(randomOne){
-            loadTime = 100;
+            loadTime = 1000;
         }
         if(randomTwo){
-            loadTime = 100;
+            loadTime = 1000;
         }
         loadOne();
     }
@@ -391,29 +394,32 @@ $("body").keypress(function(){
           clearInterval(firstLoadVar); //and stop loading stuff in
        concordNodes(); //setting up view
    }
-   if(b==3){
+
+if(b==3){
     // pushDown(secLoad);
-        loadTime = 8000;
+        // loadTime = 2000;
+        loadTime = 1000;
+
         loadTwo(); //scrolling headlines
- 
+        loadThree();
         // $("#titlename").toggle();  //show    
 
     }
-    if(b==4){
-       firstPrep = false;
-        secondPrep = true;          
-        clearInterval(secLoadVar); //and stop loading stuff in
-        clearInterval(firstLoadVar);
+    // if(b==4){
+    //    firstPrep = false;
+    //     secondPrep = true;          
+    //     clearInterval(secLoadVar); //and stop loading stuff in
+    //     clearInterval(firstLoadVar);
 
-          // clearInterval(firstLoadVar); //and stop loading stuff in
-        returnNodes();   
-        // simpleNodes();
-        b=0;        
-    }
-    if(b==5){
-        // force.();
-        b=0;        
-    }
+    //       // clearInterval(firstLoadVar); //and stop loading stuff in
+    //     returnNodes();   
+    //     // simpleNodes();
+    //     b=0;        
+    // }
+    // if(b==5){
+    //     // force.();
+    //     b=0;        
+    // }
 });
 })
 var saveOne=[];
@@ -470,7 +476,9 @@ getTextWidth = function(text, font) {
 var what = [];
 var majorNodes=[];
 var nodesMax;
-var subradius = 325;
+var subradius = 30;
+
+// var subradius = 325;
 var nodesLength;
 var jump;
 var theseHeadlines = [];
@@ -843,7 +851,24 @@ for(i=0; i<links.length; i++){
                 return d;
             })
 
+// function transRand(d) {
+//     var x=Math.random()*thisData.length;
+//     var y=Math.random()*thisData.length;     
+//       return "translate(" + x*4+ "," + y + ")";
+// }
+//     for (j=0; j<thisData.length; j++){
+//             d3.selectAll(".prefix"+j) 
+//         .transition()
+//           .duration(loadTime/2)
+//           .ease("linear")
+//           .attr("transform",transRand)
 
+//         d3.selectAll(".suffix"+j) 
+//         .transition()
+//           .duration(loadTime/2)
+//           .ease("linear")
+//           .attr("transform",transRand)
+//     }
 
 
 
@@ -865,11 +890,28 @@ loadTwo = function(){
         console.log(secLoad)   
                 secLoad = secLoad+1;      
                 pushDown(secLoad); 
+                // pushOut(secLoad);
         }
         else {
           clearInterval(secLoadVar); //and stop loading stuff in
         }
-    },loadTime)
+    },loadTime*1.1)
+} 
+loadThree = function(){
+    thirdLoadVar = setInterval(function(){ 
+    console.log("in three")
+    // if (firstLoad<=links.length){
+    // if (secLoad<=tweets.length){
+    // if (chunks.length*40/h>secLoad){
+        if(secLoad<=17){
+        console.log(tLoad)   
+                tLoad = tLoad+1;      
+                pushNeuro(tLoad); 
+        }
+        else {
+          clearInterval(thirdLoadVar); //and stop loading stuff in
+        }
+    }, loadTime/2); //loadTime)//loadTime/2)
 } 
 
  var fontMap = d3.scale.linear()
@@ -877,10 +919,13 @@ loadTwo = function(){
   .range([12, 24])
 
 function pushDown(secLoad){
- for (j=0; j<secLoad*40; j++){
+    // console.log(secLoad)
+ // for (j=0; j<secLoad*40; j++){
+ for (j=secLoad; j<secLoad+40; j++){
 
-        d3.selectAll(".prefix"+j).attr("transform",null)
+        d3.selectAll(".prefix"+j) //.attr("transform",null)
         .transition()
+          // .duration(loadTime/2)
           .duration(loadTime/2)
           .ease("linear")
          // .attr("font-size", function(d,i){
@@ -888,68 +933,122 @@ function pushDown(secLoad){
          //      return fontMap(heightNow)+"pt";
          //  })
           .attr("transform", function(d,i){
-                    // return "translate(0," + (-28) + ")"
-                return "translate(0," + (-h*secLoad) + ")"
+                return "translate(0," + (-40*secLoad) + ")"
+                // return "translate(0," + (-h*secLoad) + ")"
         })
 
-        d3.selectAll(".suffix"+j).attr("transform",null)
+        d3.selectAll(".suffix"+j) //.attr("transform",null)
         .transition()
+          // .duration(loadTime/2)
           .duration(loadTime/2)
           .ease("linear")
           .attr("transform", function(d,i){
                 // d.y = -h*secLoad;
                 // console.log(d3.select(this).y)
-                return "translate(0," + (-h*secLoad) + ")"
-                // return "translate(0," + (-28) + ")"
+                // return "translate(0," + (-h*secLoad) + ")"
+                return "translate(0," + (-40*secLoad) + ")"
         })
 
+      // d3.selectAll(".brain"+j)
+      //  .transition()
+      //     // .duration(loadTime/2)
+      //     // .duration(loadTime*5)
+      //  .duration(loadTime/10)
+      //   .ease("linear")
+      //  .attr("x",w/2)
+      //     .attr("transform", function(d,i){
+      //       if(i%2==0){
+      //              return "translate(" + (Math.random()*20) + "," + 0 + ")"             
+      //       }
+      //       if(i%2==1){
+      //                  return "translate(" + (Math.random()*-20) + "," + 0 + ")"                         
+      //       }
+      //           // return "translate(0," + (-h*secLoad) + ")"
+      //   })
 
-      d3.selectAll(".brain"+j)
-       .transition()
-       .duration(loadTime/10)
-        .ease("linear")
-       .attr("x",w/2)
-          .attr("transform", function(d,i){
-                return "translate(0," + (-h*secLoad) + ")"
-        })
+      // d3.selectAll(".brain"+j)
+      //  .transition()
+      //     .duration(loadTime/2)
+      //  // .duration(loadTime/10)
+      //   .ease("linear")
+      //  .attr("x",w/2)
+      //     .attr("transform", function(d,i){
+      //           return "translate(0," + (-40*secLoad) + ")"
+      //           // return "translate(0," + (-h*secLoad) + ")"
+      //   })
 
-        // d3.selectAll(".special"+j)
-        //             .transition()
-        //             .duration(loadTime/10)
-        //             .attr("opacity",1)
-        //             .transition()
-        //             .duration(loadTime)
-        //             .ease("linear")
-        //             .attr("font-size", 24*(Math.sqrt(s+1))+"pt")
-        //             // .attr("y",0)
-        //             .each("end", function(){
-        //                 d3.select(this)
-        //                 .transition()
-        //                 .duration(loadTime/3)
-        //             .ease("linear")
-        //             .attr("font-size", 24/(Math.sqrt(s+1))+"pt")//24/(j/13)+"pt")
-        //                 .attr("opacity",0)
-        //             })
     }
 }
 
+ function pushNeuro(secLoad){
+    // console.log(secLoad)
+ for (j=0; j<secLoad+40; j++){
 
-        // .each("end", function(){
-        //     if(secLoad<chunks.length){
-        //     pushDown(secLoad+1)
-        //     } else{}
-        // });
-        // d3.selectAll(".prefix"+i).attr("transform",null)
-        // .transition()
-        //   .duration(20000)
-        //   .ease("linear")
-        //   .attr("transform", function(d){
-        //     return "translate(0," + (-h*17) + ")"
-        // })       
+      d3.selectAll(".brain"+j)
+       .transition()
+          .duration(loadTime/1.1)
+        .ease("linear")
+       .attr("x",w/2)
+          .attr("transform", function(d,i){
+            if(i%2==0){
+                   return "translate(" + (Math.random()*20) + "," + 0 + ")"             
+            }
+            if(i%2==1){
+                       return "translate(" + (Math.random()*-20) + "," + 0 + ")"                         
+            }
+                // return "translate(0," + (-h*secLoad) + ")"
+        })
+
+
+    }
+}
       
 
+function pushOut(secLoad){
+    //full circle
 
 
+function transCircle(d) {
+    var x=w/2+Math.cos(jump*secLoad);
+    var y=h/10+Math.sin(jump*secLoad);     
+      return "translate(" + x/20+ "," + y/20 + ")";
+}
+function transOtherCircle(d) {
+    var x=w/2+Math.cos(jump*secLoad);
+    var y=h/10+Math.sin(jump*secLoad);     
+      return "translate(" + -x/20+ "," + y/20 + ")";
+}
+ // for (j=0; j<secLoad*40; j++){
+ for (j=secLoad; j<secLoad+40; j++){
+
+        d3.selectAll(".prefix"+secLoad) 
+        .transition()
+          .duration(loadTime/2)
+          .ease("linear")
+          .attr("x",(w/2+Math.cos(jump*secLoad))*-1/20)
+          .attr("y",h/2+Math.sin(jump*secLoad));
+          // .attr("transform",transOtherCircle)
+
+        d3.selectAll(".suffix"+secLoad) //.attr("transform",null)
+        .transition()
+          .duration(loadTime/2)
+          .ease("linear")
+          // .attr("transform",transCircle)
+
+      d3.selectAll(".brain"+secLoad)
+       .transition()
+          .duration(loadTime/2)
+        .ease("linear")
+          .attr("transform", function(d,i){
+                    var thisx=w/2;
+                    var thisy=h/2;  
+                return "translate("+0+"," + h + ")"
+        })
+
+    // }
+
+}
+}
 
 
 
